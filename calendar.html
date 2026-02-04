@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التقويم والاشتراكات - نظام إدارة الجيم</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- الشريط الجانبي -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-dumbbell"></i>
+                <h2>GYM<span>PRO</span></h2>
+            </div>
+            <button class="close-sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="members.html" class="menu-item">
+                <i class="fas fa-users"></i>
+                <span>إدارة الأعضاء</span>
+            </a>
+            <a href="calendar.html" class="menu-item active">
+                <i class="fas fa-calendar-alt"></i>
+                <span>التقويم والاشتراكات</span>
+            </a>
+            <a href="users.html" class="menu-item">
+                <i class="fas fa-user-cog"></i>
+                <span>المستخدمين</span>
+            </a>
+            <a href="packages.html" class="menu-item">
+                <i class="fas fa-box"></i>
+                <span>الاشتراكات</span>
+            </a>
+            <a href="settings.html" class="menu-item">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </a>
+                 <a href="notifications.html" class="menu-item active">
+                <i class="fas fa-bell"></i>
+                <span>الإشعارات</span>
+            </a>
+             <a href="renew.html" class="menu-item active">
+                <i class="fas fa-sync-alt"></i>
+                <span>تجديد الاشتراكات</span>
+            </a>
+     <a href="deleted-members.html" class="menu-item active">
+                <i class="fas fa-trash-restore"></i>
+                <span>السجلات المحذوفة</span>
+            </a>
+        </div>
+        
+        
+        <div class="user-profile">
+            <div class="user-avatar">م</div>
+            <div class="user-info">
+                <h4>المسؤول الرئيسي</h4>
+                <span>مسؤول</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="page-title">التقويم والاشتراكات</div>
+        
+        <div class="top-bar-actions">
+            <button class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+            
+            <div class="user-dropdown">
+                <button class="user-dropdown-btn">
+                    <i class="fas fa-user"></i>
+                    <span>المسؤول</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- لوحة الإشعارات -->
+    <div class="notifications-panel">
+        <div class="notifications-header">
+            <h3>الإشعارات</h3>
+            <button class="mark-all-read">تحديد الكل كمقروء</button>
+        </div>
+        <div class="notifications-list">
+            <!-- سيتم ملؤها بالجافاسكريبت -->
+        </div>
+    </div>
+    
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+        <!-- رأس الصفحة -->
+        <div class="page-header">
+            <h1>التقويم والاشتراكات</h1>
+            <div class="page-actions">
+                <button class="btn btn-primary" onclick="GymManagement.openModal('addEventModal')">
+                    <i class="fas fa-plus"></i>
+                    <span>إضافة حدث</span>
+                </button>
+                <button class="btn btn-secondary" onclick="GymManagement.updateCalendar()">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>تحديث</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- التقويم -->
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <div class="calendar-nav">
+                    <button class="prev-month">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <h2 class="current-month">يناير 2024</h2>
+                    <button class="next-month">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                <div class="calendar-actions">
+                    <button class="btn btn-secondary" onclick="GymManagement.updateCalendar(new Date())">
+                        <i class="fas fa-calendar-day"></i>
+                        <span>اليوم</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="calendar-grid">
+                <div class="calendar-day-header">الأحد</div>
+                <div class="calendar-day-header">الاثنين</div>
+                <div class="calendar-day-header">الثلاثاء</div>
+                <div class="calendar-day-header">الأربعاء</div>
+                <div class="calendar-day-header">الخميس</div>
+                <div class="calendar-day-header">الجمعة</div>
+                <div class="calendar-day-header">السبت</div>
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+            </div>
+        </div>
+        
+        <!-- قائمة الاشتراكات المنتهية قريباً -->
+        <div class="recent-activity" style="margin-top: 30px;">
+            <div class="section-header">
+                <h2>الاشتراكات المنتهية خلال الأسبوع القادم</h2>
+                <a href="#" class="view-all">عرض الكل</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>الكود</th>
+                            <th>الاسم</th>
+                            <th>الباقة</th>
+                            <th>تاريخ الانتهاء</th>
+                            <th>متبقي</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expiringSoonTable">
+                        <!-- سيتم ملؤها بالجافاسكريبت -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال إضافة حدث -->
+    <div class="modal-overlay" id="addEventModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>إضافة حدث جديد</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addEventForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="eventTitle">عنوان الحدث *</label>
+                        <input type="text" id="eventTitle" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventDate">التاريخ *</label>
+                            <input type="date" id="eventDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventTime">الوقت</label>
+                            <input type="time" id="eventTime">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eventType">نوع الحدث *</label>
+                        <select id="eventType" required>
+                            <option value="">اختر نوع الحدث</option>
+                            <option value="meeting">اجتماع</option>
+                            <option value="training">تدريب</option>
+                            <option value="maintenance">صيانة</option>
+                            <option value="holiday">إجازة</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eventDescription">الوصف</label>
+                        <textarea id="eventDescription" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button type="button" class="btn btn-secondary" onclick="GymManagement.closeModal(document.getElementById('addEventModal'))">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        حفظ الحدث
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script  type="module" src="js/user.js"></script>
+<script   type="module" src="js/members.js"></script>
+<script   type="module" src="js/login.js"></script>
+<!-- <script src="js/telegram.js"></script> -->
+    <script  type="module" src="js/script.js"></script>
+    <script>
+        // تهيئة الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            // تحميل التقويم
+            if (GymManagement) {
+                GymManagement.updateCalendar();
+                updateExpiringSoonTable();
+            }
+            
+            // إعداد نموذج إضافة حدث
+            const addEventForm = document.getElementById('addEventForm');
+            if (addEventForm) {
+                addEventForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleAddEvent();
+                });
+                
+                // تعيين تاريخ اليوم كافتراضي
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('eventDate').value = today;
+            }
+        });
+        
+        // تحديث جدول الاشتراكات المنتهية قريباً
+        function updateExpiringSoonTable() {
+            const tableBody = document.getElementById('expiringSoonTable');
+            if (!tableBody) return;
+            
+            const members = membersModule.getAllMembers();
+            const today = new Date();
+            const nextWeek = new Date();
+            nextWeek.setDate(today.getDate() + 7);
+            
+            const expiringSoon = members.filter(member => {
+                const endDate = new Date(member.endDate);
+                return endDate >= today && endDate <= nextWeek;
+            }).sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
+            
+            if (expiringSoon.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 30px;">
+                            لا توجد اشتراكات تنتهي خلال الأسبوع القادم
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            let tableHTML = '';
+            expiringSoon.forEach(member => {
+                const endDate = new Date(member.endDate);
+                const diffTime = endDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                tableHTML += `
+                    <tr>
+                        <td>${member.id}</td>
+                        <td>${member.fullName}</td>
+                        <td>${member.packageName}</td>
+                        <td>${member.endDate}</td>
+                        <td>
+                            <span class="status ${diffDays <= 3 ? 'expiring' : 'active'}">
+                                ${diffDays} يوم${diffDays > 1 ? 'اً' : ''}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view" title="عرض" onclick="GymManagement.viewMember('${member.id}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn edit" title="تجديد" onclick="renewMemberFromCalendar('${member.id}')">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = tableHTML;
+        }
+        
+        // معالجة إضافة حدث
+        function handleAddEvent() {
+            const eventData = {
+                title: document.getElementById('eventTitle').value,
+                date: document.getElementById('eventDate').value,
+                time: document.getElementById('eventTime').value,
+                type: document.getElementById('eventType').value,
+                description: document.getElementById('eventDescription').value
+            };
+            
+            // التحقق من صحة البيانات
+            if (!eventData.title || !eventData.date || !eventData.type) {
+                GymManagement.showCustomAlert('خطأ', 'يرجى ملء الحقول المطلوبة', 'error');
+                return;
+            }
+            
+            // حفظ الحدث (يمكن توسيع هذه الوظيفة)
+            // حالياً سنحفظ في localStorage
+            const events = JSON.parse(localStorage.getItem('gymEvents') || '[]');
+            events.push({
+                ...eventData,
+                id: Date.now(),
+                createdAt: new Date().toISOString()
+            });
+            
+            localStorage.setItem('gymEvents', JSON.stringify(events));
+            
+            GymManagement.closeModal(document.getElementById('addEventModal'));
+            GymManagement.showCustomAlert('تمت الإضافة', 'تم إضافة الحدث بنجاح', 'success');
+            
+            // تحديث التقويم
+            GymManagement.updateCalendar();
+            
+            // إعادة تعيين النموذج
+            document.getElementById('addEventForm').reset();
+        }
+        
+        // تجديد عضو من التقويم
+        window.renewMemberFromCalendar = function(memberId) {
+            // إعادة التوجيه إلى صفحة الأعضاء مع فتح مودال التجديد
+            window.location.href = 'members.html';
+            
+            // يمكن تخزين معرف العضو لفتح مودال التجديد تلقائياً
+            localStorage.setItem('autoRenewMemberId', memberId);
+        };
+    </script>
+</body>
+</html>

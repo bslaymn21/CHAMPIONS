@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تجديد الاشتراكات - نظام إدارة الجيم</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- الشريط الجانبي -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-dumbbell"></i>
+                <h2>GYM<span>PRO</span></h2>
+            </div>
+            <button class="close-sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="members.html" class="menu-item">
+                <i class="fas fa-users"></i>
+                <span>إدارة الأعضاء</span>
+            </a>
+            <a href="calendar.html" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>التقويم والاشتراكات</span>
+            </a>
+            <a href="users.html" class="menu-item">
+                <i class="fas fa-user-cog"></i>
+                <span>المستخدمين</span>
+            </a>
+            <a href="packages.html" class="menu-item">
+                <i class="fas fa-box"></i>
+                <span>الاشتراكات</span>
+            </a>
+            <a href="settings.html" class="menu-item">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </a>
+                 <a href="notifications.html" class="menu-item active">
+                <i class="fas fa-bell"></i>
+                <span>الإشعارات</span>
+            </a>
+            <a href="renew.html" class="menu-item active">
+                <i class="fas fa-sync-alt"></i>
+                <span>تجديد الاشتراكات</span>
+            </a>
+            <a href="deleted-members.html" class="menu-item active">
+                <i class="fas fa-trash-restore"></i>
+                <span>السجلات المحذوفة</span>
+            </a>
+     
+        </div>
+        
+       
+    </div>
+    
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="page-title">تجديد الاشتراكات</div>
+        
+        <div class="top-bar-actions">
+            <button class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+            
+            
+        </div>
+    </div>
+    
+    <!-- لوحة الإشعارات -->
+    <div class="notifications-panel">
+        <div class="notifications-header">
+            <h3>الإشعارات</h3>
+            <button class="mark-all-read">تحديد الكل كمقروء</button>
+        </div>
+        <div class="notifications-list">
+            <!-- سيتم ملؤها بالجافاسكريبت -->
+        </div>
+    </div>
+    
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+        <!-- رأس الصفحة -->
+        <div class="page-header">
+            <h1>تجديد الاشتراكات</h1>
+            <div class="page-actions">
+                <div class="search-box">
+                    <input type="text" id="renewSearch" placeholder="ابحث عن عضو للتجديد...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <button class="btn btn-primary" onclick="showBulkRenewal()">
+                    <i class="fas fa-bolt"></i>
+                    <span>تجديد جماعي</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- إحصائيات التجديد -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-icon members">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>المنتهية اليوم</h3>
+                <div class="stat-value" id="expiredToday">0</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>يتطلب تجديد فوري</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon male">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>تنتهي خلال 3 أيام</h3>
+                <div class="stat-value" id="expiring3Days">0</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-clock"></i>
+                    <span>يجب التواصل معهم</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon female">
+                    <i class="fas fa-calendar-week"></i>
+                </div>
+                <h3>تنتهي هذا الأسبوع</h3>
+                <div class="stat-value" id="expiringWeek">0</div>
+                <div class="stat-change warning">
+                    <i class="fas fa-clock"></i>
+                    <span>يتطلب متابعة</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon revenue">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <h3>تم تجديدها هذا الشهر</h3>
+                <div class="stat-value" id="renewedMonth">0</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+20% عن الشهر الماضي</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- قائمة الأعضاء المنتهية والمستحق تجديدها -->
+        <div class="table-container" style="margin-top: 30px;">
+            <div class="table-header">
+                <div class="table-title">الأعضاء المستحق تجديد اشتراكاتهم</div>
+                <div class="table-filters">
+                    <select class="filter-select" onchange="filterRenewableMembers(this.value)">
+                        <option value="expired">المنتهية فقط</option>
+                        <option value="expiring3">تنتهي خلال 3 أيام</option>
+                        <option value="expiring7">تنتهي خلال أسبوع</option>
+                        <option value="all">الكل</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table" id="renewableMembersTable">
+                    <thead>
+                        <tr>
+                            <th width="50">
+                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)">
+                            </th>
+                            <th>الكود</th>
+                            <th>الاسم</th>
+                            <th>الباقة الحالية</th>
+                            <th>تاريخ الانتهاء</th>
+                            <th>متبقي</th>
+                            <th>حالة الاشتراك</th>
+                            <th>عدد مرات التجديد</th>
+                            <th>آخر تجديد</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- سيتم ملؤها بالجافاسكريبت -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="table-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
+                <div>
+                    <span id="selectedCount">0</span> عضو محدد
+                </div>
+                <div>
+                    <button class="btn btn-primary" id="bulkRenewBtn" onclick="renewSelectedMembers()" disabled>
+                        <i class="fas fa-sync-alt"></i>
+                        تجديد المحددين
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- سجل عمليات التجديد الأخيرة -->
+        <div class="recent-activity" style="margin-top: 30px;">
+            <div class="section-header">
+                <h2>عمليات التجديد الأخيرة</h2>
+                <a href="#" class="view-all" onclick="viewAllRenewals()">عرض الكل</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>التاريخ</th>
+                            <th>اسم العضو</th>
+                            <th>الباقة الجديدة</th>
+                            <th>المبلغ</th>
+                            <th>طريقة الدفع</th>
+                            <th>بواسطة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentRenewalsTable">
+                        <!-- سيتم ملؤها بالجافاسكريبت -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال التجديد -->
+    <!-- مودال التجديد الذكي -->
+<div class="modal-overlay" id="renewalModal">
+    <div class="modal" style="max-width: 700px;">
+        <div class="modal-header">
+            <h3 id="renewalModalTitle">تجديد اشتراك</h3>
+            <button class="close-modal" onclick="closeRenewalModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="modal-tabs">
+            <button class="tab-btn active" onclick="switchTab('view')" id="viewTab">
+                <i class="fas fa-eye"></i> عرض البيانات الحالية
+            </button>
+            <button class="tab-btn" onclick="switchTab('renew')" id="renewTab">
+                <i class="fas fa-sync-alt"></i> تجديد مباشر
+            </button>
+            <!-- <button class="tab-btn" onclick="switchTab('edit')" id="editTab">
+                <i class="fas fa-edit"></i> تعديل ثم تجديد
+            </button> -->
+        </div>
+        
+        <div class="modal-body">
+            <!-- تبويب عرض البيانات -->
+            <div id="viewTabContent" class="tab-content active">
+                <div class="member-summary-card">
+                    <div class="member-header">
+                        <h4>البيانات الحالية للعضو</h4>
+                        <button class="btn btn-sm btn-primary" onclick="copyCurrentData()">
+                            <i class="fas fa-copy"></i> نسخ للاستخدام
+                        </button> 
+                    </div>
+                    <div class="member-details-grid" id="currentMemberDetails">
+                        <!-- سيتم ملؤها بالجافاسكريبت -->
+                    </div>
+                    <div class="quick-actions">
+                        <!-- <button class="btn btn-success" onclick="quickRenewSamePackage()">
+                            <i class="fas fa-bolt"></i> تجديد بنفس الباقة
+                        </button> -->
+                        <button class="btn btn-primary" onclick="switchTab('renew')">
+                            <i class="fas fa-sync-alt"></i> تجديد بباقة أخرى
+                        </button>
+                        <!-- <button class="btn btn-warning" onclick="switchTab('edit')">
+                            <i class="fas fa-edit"></i> تعديل البيانات أولاً
+                        </button> -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- تبويب التجديد المباشر -->
+            <div id="renewTabContent" class="tab-content">
+                <form id="renewalForm">
+                    <input type="hidden" id="renewMemberId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="renewalPackage">الباقة الجديدة *</label>
+                            <select id="renewalPackage" required onchange="updateRenewalPrice()">
+                                <!-- سيتم ملؤها بالجافاسكريبت -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="renewalPrice">السعر (جنيه) *</label>
+                            <input type="number" id="renewalPrice" required min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="renewalDuration">المدة (يوم) *</label>
+                            <input type="number" id="renewalDuration" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="renewalStartDate">تاريخ البدء *</label>
+                            <input type="date" id="renewalStartDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="renewalPaymentMethod">طريقة الدفع *</label>
+                        <select id="renewalPaymentMethod" required>
+                            <option value="cash">كاش</option>
+                            <option value="vodafone_cash">فودافون كاش</option>
+                            <option value="instapay">انستا باي</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="renewalNotes">ملاحظات إضافية</label>
+                        <textarea id="renewalNotes" rows="2" placeholder="ملاحظات خاصة بالتجديد (اختياري)"></textarea>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- تبويب التعديل ثم التجديد -->
+            <div id="editTabContent" class="tab-content">
+                <form id="editMemberForm">
+                    <input type="hidden" id="editMemberId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editFirstName">الاسم الأول *</label>
+                            <input type="text" id="editFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editLastName">الاسم الأخير *</label>
+                            <input type="text" id="editLastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editAge">العمر *</label>
+                            <input type="number" id="editAge" required min="16" max="80">
+                        </div>
+                        <div class="form-group">
+                            <label for="editGender">الجنس *</label>
+                            <select id="editGender" required>
+                                <option value="male">ذكر</option>
+                                <option value="female">أنثى</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editPhone">رقم الهاتف *</label>
+                            <input type="tel" id="editPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">البريد الإلكتروني</label>
+                            <input type="email" id="editEmail">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editPackage">الباقة الجديدة *</label>
+                            <select id="editPackage" required onchange="updateEditPrice()">
+                                <!-- سيتم ملؤها بالجافاسكريبت -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPrice">السعر (جنيه) *</label>
+                            <input type="number" id="editPrice" required min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editDuration">المدة (يوم) *</label>
+                            <input type="number" id="editDuration" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="editStartDate">تاريخ البدء *</label>
+                            <input type="date" id="editStartDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editPaymentMethod">طريقة الدفع *</label>
+                        <select id="editPaymentMethod" required>
+                            <option value="cash">كاش</option>
+                            <option value="vodafone_cash">فودافون كاش</option>
+                            <option value="instapay">انستا باي</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <div id="viewTabFooter" class="tab-footer active">
+                <button class="btn btn-secondary" onclick="closeRenewalModal()">
+                    <i class="fas fa-times"></i> إغلاق
+                </button>
+                <div style="flex: 1;"></div>
+                <button class="btn btn-primary" onclick="quickRenewWithCurrentData()">
+                    <i class="fas fa-sync-alt"></i> تجديد سريع
+                </button>
+            </div>
+            
+            <div id="renewTabFooter" class="tab-footer">
+                <button class="btn btn-secondary" onclick="switchTab('view')">
+                    <i class="fas fa-arrow-right"></i> العودة
+                </button>
+                <button class="btn btn-success" onclick="processRenewal()">
+                    <i class="fas fa-check"></i> تأكيد التجديد
+                </button>
+            </div>
+            
+            <div id="editTabFooter" class="tab-footer">
+                <button class="btn btn-secondary" onclick="switchTab('view')">
+                    <i class="fas fa-arrow-right"></i> العودة
+                </button>
+                <button class="btn btn-primary" onclick="updateAndRenew()">
+                    <i class="fas fa-save"></i> حفظ وتجديد
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- مودال التجديد الجماعي -->
+    <div class="modal-overlay" id="bulkRenewalModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>تجديد اشتراكات متعددة</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="bulkRenewalForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>الأعضاء المحددين: <span id="bulkMembersCount">0</span> عضو</label>
+                        <div id="bulkMembersList" style="max-height: 150px; overflow-y: auto; background: #f5f5f5; padding: 10px; border-radius: 8px; margin-top: 10px;">
+                            <!-- سيتم ملؤها بالجافاسكريبت -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bulkRenewalPackage">اختر الباقة للجميع *</label>
+                        <select id="bulkRenewalPackage" required>
+                            <!-- سيتم ملؤها بالجافاسكريبت -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bulkRenewalPrice">السعر للجميع (جنيه) *</label>
+                            <input type="number" id="bulkRenewalPrice" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="bulkRenewalDuration">المدة للجميع (يوم) *</label>
+                            <input type="number" id="bulkRenewalDuration" required min="1">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bulkRenewalStartDate">تاريخ البدء للجميع *</label>
+                            <input type="date" id="bulkRenewalStartDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bulkRenewalPaymentMethod">طريقة الدفع للجميع *</label>
+                            <select id="bulkRenewalPaymentMethod" required>
+                                <!-- سيتم ملؤها بالجافاسكريبت -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bulkRenewalNotes">ملاحظات عامة</label>
+                        <textarea id="bulkRenewalNotes" rows="3" placeholder="ملاحظات تنطبق على جميع الأعضاء المحددين"></textarea>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button type="button" class="btn btn-secondary" onclick="GymManagement.closeModal(document.getElementById('bulkRenewalModal'))">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i>
+                        تجديد الجميع
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script  type="module" src="js/user.js"></script>
+<script  type="module" src="js/members.js"></script>
+<script src="js/login.js"></script>
+<!-- <script src="js/telegram.js"></script> -->
+    <script  src="js/script.js"></script>
+   <script>
+// =========== دوال المودال الأساسية ===========
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function showAlert(title, message, type = 'info') {
+    alert(`${title}: ${message}`);
+}
+
+// كائن GymManagement إذا لم يكن موجوداً
+if (typeof window.GymManagement === 'undefined') {
+    window.GymManagement = {
+        openModal: openModal,
+        closeModal: function(element) {
+            if (element && element.classList) {
+                element.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        },
+        showCustomAlert: showAlert,
+        viewMember: function(memberId) {
+            alert(`عرض بيانات العضو ${memberId}`);
+        }
+    };
+}
+
+// =========== متغيرات عامة ===========
+let currentMemberData = null;
+
+// =========== دوال الصفحة الرئيسية ===========
+
+// تحميل الأعضاء المستحقين للتجديد
+function loadRenewableMembers() {
+    if (typeof membersModule === 'undefined') {
+        console.error('membersModule غير محمل');
+        return;
+    }
+    
+    const members = membersModule.getAllMembers();
+    const today = new Date();
+    
+    const renewableMembers = members.filter(member => {
+        const endDate = new Date(member.endDate);
+        const diffTime = endDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays <= 7 || member.status === 'expired';
+    }).sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
+    
+    displayRenewableMembers(renewableMembers);
+}
+
+// عرض الأعضاء المستحقين للتجديد
+function displayRenewableMembers(members) {
+    const tableBody = document.querySelector('#renewableMembersTable tbody');
+    if (!tableBody) return;
+    
+    if (members.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="10" style="text-align: center; padding: 40px;">
+                    <i class="fas fa-check-circle" style="font-size: 48px; color: #4CAF50; margin-bottom: 20px;"></i>
+                    <h3>لا توجد اشتراكات منتهية قريباً</h3>
+                    <p>جميع الاشتراكات نشطة ولا تتطلب تجديد</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    const today = new Date();
+    let tableHTML = '';
+    
+    members.forEach(member => {
+        const endDate = new Date(member.endDate);
+        const diffTime = endDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        let statusText = '';
+        let statusClass = '';
+        
+        if (diffDays < 0) {
+            statusText = 'منتهي';
+            statusClass = 'expired';
+        } else if (diffDays === 0) {
+            statusText = 'ينتهي اليوم';
+            statusClass = 'expiring';
+        } else if (diffDays <= 3) {
+            statusText = `ينتهي خلال ${diffDays} يوم`;
+            statusClass = 'expiring';
+        } else {
+            statusText = `ينتهي خلال ${diffDays} يوم`;
+            statusClass = 'active';
+        }
+        
+        const renewalCount = Math.floor(Math.random() * 5);
+        const lastRenewal = renewalCount > 0 ? 'قبل شهر' : 'لا يوجد';
+        
+        tableHTML += `
+            <tr>
+                <td>
+                    <input type="checkbox" class="member-checkbox" value="${member.id}" onchange="updateSelectedCount()">
+                </td>
+                <td>${member.id}</td>
+                <td>${member.fullName}</td>
+                <td>${member.packageName}</td>
+                <td>${member.endDate}</td>
+                <td>
+                    <span class="status ${statusClass}">
+                        ${diffDays < 0 ? 'منتهي' : `${diffDays} يوم`}
+                    </span>
+                </td>
+                <td>
+                    <span class="status ${member.status}">
+                        ${statusText}
+                    </span>
+                </td>
+                <td>${renewalCount}</td>
+                <td>${lastRenewal}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="action-btn view" title="عرض" onclick="viewMember('${member.id}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn edit" title="تجديد" onclick="openRenewalModal('${member.id}')">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button class="action-btn delete" title="إشعار" onclick="sendReminder('${member.id}')">
+                            <i class="fas fa-bell"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+    
+    tableBody.innerHTML = tableHTML;
+}
+
+// تحديث إحصائيات التجديد
+function updateRenewalStats() {
+    if (typeof membersModule === 'undefined') return;
+    
+    const members = membersModule.getAllMembers();
+    const today = new Date();
+    
+    let expiredToday = 0;
+    let expiring3Days = 0;
+    let expiringWeek = 0;
+    
+    members.forEach(member => {
+        const endDate = new Date(member.endDate);
+        const diffTime = endDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays < 0) {
+            const hoursDiff = Math.abs(diffTime) / (1000 * 60 * 60);
+            if (hoursDiff <= 24) expiredToday++;
+        } else if (diffDays <= 3) {
+            expiring3Days++;
+        } else if (diffDays <= 7) {
+            expiringWeek++;
+        }
+    });
+    
+    const renewedMonth = Math.floor(Math.random() * 20) + 5;
+    
+    const expiredTodayEl = document.getElementById('expiredToday');
+    const expiring3DaysEl = document.getElementById('expiring3Days');
+    const expiringWeekEl = document.getElementById('expiringWeek');
+    const renewedMonthEl = document.getElementById('renewedMonth');
+    
+    if (expiredTodayEl) expiredTodayEl.textContent = expiredToday;
+    if (expiring3DaysEl) expiring3DaysEl.textContent = expiring3Days;
+    if (expiringWeekEl) expiringWeekEl.textContent = expiringWeek;
+    if (renewedMonthEl) renewedMonthEl.textContent = renewedMonth;
+}
+
+// تحميل عمليات التجديد الأخيرة
+function loadRecentRenewals() {
+    const tableBody = document.getElementById('recentRenewalsTable');
+    if (!tableBody) return;
+    
+    const recentRenewals = [
+        { date: '2024-01-15', memberName: 'أحمد محمد', package: 'باقة الذهبية', amount: '500 ج.م', payment: 'كاش', by: 'المسؤول' },
+        { date: '2024-01-14', memberName: 'سارة علي', package: 'باقة الفضية', amount: '350 ج.م', payment: 'فودافون كاش', by: 'المساعد' },
+        { date: '2024-01-13', memberName: 'خالد محمود', package: 'باقة البرونزية', amount: '250 ج.م', payment: 'انستا باي', by: 'المسؤول' }
+    ];
+    
+    let tableHTML = '';
+    recentRenewals.forEach(renewal => {
+        tableHTML += `
+            <tr>
+                <td>${renewal.date}</td>
+                <td>${renewal.memberName}</td>
+                <td>${renewal.package}</td>
+                <td>${renewal.amount}</td>
+                <td>${renewal.payment}</td>
+                <td>${renewal.by}</td>
+            </tr>
+        `;
+    });
+    
+    tableBody.innerHTML = tableHTML;
+}
+
+// البحث عن أعضاء للتجديد
+function searchRenewableMembers(query) {
+    if (typeof membersModule === 'undefined') return;
+    
+    const members = membersModule.getAllMembers();
+    const today = new Date();
+    
+    const filteredMembers = members.filter(member => {
+        const endDate = new Date(member.endDate);
+        const diffTime = endDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return (diffDays <= 7 || member.status === 'expired') &&
+               (member.fullName.includes(query) || member.id.includes(query));
+    });
+    
+    displayRenewableMembers(filteredMembers);
+}
+
+// تصفية الأعضاء حسب الحالة
+function filterRenewableMembers(filter) {
+    if (typeof membersModule === 'undefined') return;
+    
+    const members = membersModule.getAllMembers();
+    const today = new Date();
+    
+    const filteredMembers = members.filter(member => {
+        const endDate = new Date(member.endDate);
+        const diffTime = endDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (filter === 'expired') return diffDays < 0;
+        if (filter === 'expiring3') return diffDays >= 0 && diffDays <= 3;
+        if (filter === 'expiring7') return diffDays >= 0 && diffDays <= 7;
+        return diffDays <= 7 || member.status === 'expired';
+    });
+    
+    displayRenewableMembers(filteredMembers);
+}
+
+// إرسال تذكير
+function sendReminder(memberId) {
+    if (typeof membersModule === 'undefined') return;
+    
+    const members = membersModule.getAllMembers();
+    const member = members.find(m => m.id === memberId);
+    
+    if (member) {
+        showAlert('تم الإرسال', 'تم إرسال التذكير بنجاح', 'success');
+    }
+}
+
+// عرض جميع عمليات التجديد
+function viewAllRenewals() {
+    showAlert('قريباً', 'هذه الميزة قيد التطوير', 'info');
+}
+
+// =========== دوال المودال الذكي ===========
+
+// فتح مودال التجديد الذكي
+window.openRenewalModal = function(memberId) {
+    if (typeof membersModule === 'undefined') {
+        showAlert('خطأ', 'نظام الأعضاء غير متاح', 'error');
+        return;
+    }
+    
+    const members = membersModule.getAllMembers();
+    const member = members.find(m => m.id === memberId);
+    
+    if (!member) {
+        showAlert('خطأ', 'العضو غير موجود', 'error');
+        return;
+    }
+    
+    currentMemberData = member;
+    
+    populateCurrentMemberData(member);
+    loadRenewalPackages(member.packageId);
+    loadEditPackages(member.packageId);
+    
+    openModal('renewalModal');
+    switchTab('view');
+    
+    const today = new Date().toISOString().split('T')[0];
+    const renewalStartDate = document.getElementById('renewalStartDate');
+    const editStartDate = document.getElementById('editStartDate');
+    
+    if (renewalStartDate) renewalStartDate.value = today;
+    if (editStartDate) editStartDate.value = today;
+};
+
+// تعبئة بيانات العضو الحالية
+function populateCurrentMemberData(member) {
+    const titleEl = document.getElementById('renewalModalTitle');
+    const detailsEl = document.getElementById('currentMemberDetails');
+    
+    if (titleEl) titleEl.textContent = `تجديد اشتراك - ${member.fullName}`;
+    
+    const renewMemberId = document.getElementById('renewMemberId');
+    const editMemberId = document.getElementById('editMemberId');
+    if (renewMemberId) renewMemberId.value = member.id;
+    if (editMemberId) editMemberId.value = member.id;
+    
+    if (detailsEl) {
+        detailsEl.innerHTML = `
+            <div class="detail-item">
+                <div class="detail-label">الكود</div>
+                <div class="detail-value">${member.id}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">الاسم الكامل</div>
+                <div class="detail-value">${member.fullName}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">العمر</div>
+                <div class="detail-value">${member.age} سنة</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">الجنس</div>
+                <div class="detail-value">${member.gender === 'male' ? 'ذكر' : 'أنثى'}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">الهاتف</div>
+                <div class="detail-value">${member.phone}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">الباقة الحالية</div>
+                <div class="detail-value">${member.packageName}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">السعر الحالي</div>
+                <div class="detail-value">${member.packagePrice} ج.م</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">تاريخ الانتهاء</div>
+                <div class="detail-value">${member.endDate}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">الحالة</div>
+                <div class="detail-value">
+                    <span style="color: ${member.status === 'active' ? '#2ecc71' : member.status === 'expiring' ? '#f39c12' : '#e74c3c'}">
+                        ${member.status === 'active' ? 'نشط' : member.status === 'expiring' ? 'قريب الانتهاء' : 'منتهي'}
+                    </span>
+                </div>
+            </div>
+        `;
+    }
+    
+    const editFirstName = document.getElementById('editFirstName');
+    const editLastName = document.getElementById('editLastName');
+    const editAge = document.getElementById('editAge');
+    const editGender = document.getElementById('editGender');
+    const editPhone = document.getElementById('editPhone');
+    const editEmail = document.getElementById('editEmail');
+    const editPrice = document.getElementById('editPrice');
+    const editDuration = document.getElementById('editDuration');
+    const editPaymentMethod = document.getElementById('editPaymentMethod');
+    
+    if (editFirstName) editFirstName.value = member.firstName;
+    if (editLastName) editLastName.value = member.lastName;
+    if (editAge) editAge.value = member.age;
+    if (editGender) editGender.value = member.gender;
+    if (editPhone) editPhone.value = member.phone;
+    if (editEmail) editEmail.value = member.email || '';
+    if (editPrice) editPrice.value = member.packagePrice;
+    if (editDuration) editDuration.value = member.packageDuration;
+    if (editPaymentMethod) editPaymentMethod.value = member.paymentMethod;
+}
+
+// تحميل الباقات للتجديد
+function loadRenewalPackages(selectedId = null) {
+    const select = document.getElementById('renewalPackage');
+    if (!select || typeof membersModule === 'undefined') return;
+    
+    const packages = membersModule.getAllPackages();
+    select.innerHTML = '<option value="">اختر الباقة</option>';
+    
+    packages.forEach(pkg => {
+        const option = document.createElement('option');
+        option.value = pkg.id;
+        option.textContent = `${pkg.name} - ${pkg.price} ج.م (${pkg.duration} يوم)`;
+        option.setAttribute('data-price', pkg.price);
+        option.setAttribute('data-duration', pkg.duration);
+        
+        if (selectedId && pkg.id === selectedId) {
+            option.selected = true;
+        }
+        
+        select.appendChild(option);
+    });
+    
+    updateRenewalPrice();
+}
+
+// تحميل الباقات للتعديل
+function loadEditPackages(selectedId = null) {
+    const select = document.getElementById('editPackage');
+    if (!select || typeof membersModule === 'undefined') return;
+    
+    const packages = membersModule.getAllPackages();
+    select.innerHTML = '<option value="">اختر الباقة</option>';
+    
+    packages.forEach(pkg => {
+        const option = document.createElement('option');
+        option.value = pkg.id;
+        option.textContent = `${pkg.name} - ${pkg.price} ج.م (${pkg.duration} يوم)`;
+        option.setAttribute('data-price', pkg.price);
+        option.setAttribute('data-duration', pkg.duration);
+        
+        if (selectedId && pkg.id === selectedId) {
+            option.selected = true;
+        }
+        
+        select.appendChild(option);
+    });
+    
+    updateEditPrice();
+}
+
+// تحديث السعر في تبويب التجديد
+function updateRenewalPrice() {
+    const select = document.getElementById('renewalPackage');
+    if (!select) return;
+    
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (selectedOption && selectedOption.value) {
+        const priceEl = document.getElementById('renewalPrice');
+        const durationEl = document.getElementById('renewalDuration');
+        
+        if (priceEl) priceEl.value = selectedOption.getAttribute('data-price');
+        if (durationEl) durationEl.value = selectedOption.getAttribute('data-duration');
+    } else if (currentMemberData) {
+        const priceEl = document.getElementById('renewalPrice');
+        const durationEl = document.getElementById('renewalDuration');
+        
+        if (priceEl) priceEl.value = currentMemberData.packagePrice;
+        if (durationEl) durationEl.value = currentMemberData.packageDuration;
+    }
+}
+
+// تحديث السعر في تبويب التعديل
+function updateEditPrice() {
+    const select = document.getElementById('editPackage');
+    if (!select) return;
+    
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (selectedOption && selectedOption.value) {
+        const priceEl = document.getElementById('editPrice');
+        const durationEl = document.getElementById('editDuration');
+        
+        if (priceEl) priceEl.value = selectedOption.getAttribute('data-price');
+        if (durationEl) durationEl.value = selectedOption.getAttribute('data-duration');
+    } else if (currentMemberData) {
+        const priceEl = document.getElementById('editPrice');
+        const durationEl = document.getElementById('editDuration');
+        
+        if (priceEl) priceEl.value = currentMemberData.packagePrice;
+        if (durationEl) durationEl.value = currentMemberData.packageDuration;
+    }
+}
+
+// تبديل التبويبات
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    document.querySelectorAll('.tab-footer').forEach(footer => {
+        footer.classList.remove('active');
+    });
+    
+    const tabEl = document.getElementById(`${tabName}Tab`);
+    const contentEl = document.getElementById(`${tabName}TabContent`);
+    const footerEl = document.getElementById(`${tabName}TabFooter`);
+    
+    if (tabEl) tabEl.classList.add('active');
+    if (contentEl) contentEl.classList.add('active');
+    if (footerEl) footerEl.classList.add('active');
+    
+    if (tabName === 'renew' && currentMemberData) {
+        const paymentEl = document.getElementById('renewalPaymentMethod');
+        if (paymentEl) paymentEl.value = currentMemberData.paymentMethod;
+    }
+}
+
+// تجديد سريع بنفس البيانات الحالية
+function quickRenewSamePackage() {
+    if (!currentMemberData) return;
+    
+    const renewalData = {
+        packageId: currentMemberData.packageId,
+        packageName: currentMemberData.packageName,
+        packagePrice: currentMemberData.packagePrice,
+        packageDuration: currentMemberData.packageDuration,
+        startDate: new Date().toISOString().split('T')[0],
+        paymentMethod: currentMemberData.paymentMethod,
+        notes: 'تجديد سريع بنفس الباقة'
+    };
+    
+    processRenewalRequest(currentMemberData.id, renewalData);
+}
+
+// تجديد سريع بالبيانات الحالية
+function quickRenewWithCurrentData() {
+    switchTab('renew');
+}
+
+// نسخ البيانات الحالية للاستخدام
+function copyCurrentData() {
+    if (!currentMemberData) return;
+    
+    const dataToCopy = {
+        name: currentMemberData.fullName,
+        package: currentMemberData.packageName,
+        price: currentMemberData.packagePrice,
+        endDate: currentMemberData.endDate
+    };
+    
+    navigator.clipboard.writeText(JSON.stringify(dataToCopy, null, 2));
+    showAlert('تم', 'تم نسخ البيانات بنجاح', 'success');
+}
+
+// معالجة التجديد
+function processRenewal() {
+    if (!currentMemberData) return;
+    
+    const packageSelect = document.getElementById('renewalPackage');
+    if (!packageSelect) return;
+    
+    const selectedOption = packageSelect.options[packageSelect.selectedIndex];
+    if (!selectedOption) return;
+    
+    const renewalData = {
+        packageId: packageSelect.value,
+        packageName: selectedOption.text.split(' - ')[0],
+        packagePrice: document.getElementById('renewalPrice')?.value || 0,
+        packageDuration: document.getElementById('renewalDuration')?.value || 0,
+        startDate: document.getElementById('renewalStartDate')?.value || new Date().toISOString().split('T')[0],
+        paymentMethod: document.getElementById('renewalPaymentMethod')?.value || 'cash',
+        notes: document.getElementById('renewalNotes')?.value || 'تجديد اشتراك'
+    };
+    
+    if (!renewalData.packageId || !renewalData.packagePrice || !renewalData.packageDuration || !renewalData.startDate || !renewalData.paymentMethod) {
+        showAlert('خطأ', 'يرجى ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+    
+    processRenewalRequest(currentMemberData.id, renewalData);
+}
+
+// تحديث البيانات ثم التجديد
+function updateAndRenew() {
+    if (!currentMemberData) return;
+    
+    const updatedMember = {
+        id: currentMemberData.id,
+        firstName: document.getElementById('editFirstName')?.value || '',
+        lastName: document.getElementById('editLastName')?.value || '',
+        age: document.getElementById('editAge')?.value || 0,
+        gender: document.getElementById('editGender')?.value || '',
+        phone: document.getElementById('editPhone')?.value || '',
+        email: document.getElementById('editEmail')?.value || '',
+        packageId: document.getElementById('editPackage')?.value || 0,
+        packageName: '',
+        packagePrice: document.getElementById('editPrice')?.value || 0,
+        packageDuration: document.getElementById('editDuration')?.value || 0,
+        paymentMethod: document.getElementById('editPaymentMethod')?.value || 'cash'
+    };
+    
+    const packageSelect = document.getElementById('editPackage');
+    if (packageSelect) {
+        const selectedOption = packageSelect.options[packageSelect.selectedIndex];
+        if (selectedOption) {
+            updatedMember.packageName = selectedOption.text.split(' - ')[0];
+        }
+    }
+    
+    const requiredFields = ['firstName', 'lastName', 'age', 'gender', 'phone', 'packageId', 'packagePrice', 'packageDuration', 'paymentMethod'];
+    for (let field of requiredFields) {
+        if (!updatedMember[field]) {
+            showAlert('خطأ', `يرجى ملء حقل ${field}`, 'error');
+            return;
+        }
+    }
+    
+    updateMemberInSystem(updatedMember);
+    
+    const renewalData = {
+        packageId: updatedMember.packageId,
+        packageName: updatedMember.packageName,
+        packagePrice: updatedMember.packagePrice,
+        packageDuration: updatedMember.packageDuration,
+        startDate: document.getElementById('editStartDate')?.value || new Date().toISOString().split('T')[0],
+        paymentMethod: updatedMember.paymentMethod,
+        notes: 'تم التحديث والتجديد'
+    };
+    
+    processRenewalRequest(currentMemberData.id, renewalData);
+}
+
+// تحديث بيانات العضو في النظام
+function updateMemberInSystem(updatedMember) {
+    if (typeof membersModule === 'undefined') return;
+    
+    const members = membersModule.getAllMembers();
+    const memberIndex = members.findIndex(m => m.id === updatedMember.id);
+    
+    if (memberIndex !== -1) {
+        members[memberIndex].firstName = updatedMember.firstName;
+        members[memberIndex].lastName = updatedMember.lastName;
+        members[memberIndex].fullName = `${updatedMember.firstName} ${updatedMember.lastName}`;
+        members[memberIndex].age = parseInt(updatedMember.age);
+        members[memberIndex].gender = updatedMember.gender;
+        members[memberIndex].phone = updatedMember.phone;
+        members[memberIndex].email = updatedMember.email;
+        members[memberIndex].packageId = parseInt(updatedMember.packageId);
+        members[memberIndex].packageName = updatedMember.packageName;
+        members[memberIndex].packagePrice = parseInt(updatedMember.packagePrice);
+        members[memberIndex].packageDuration = parseInt(updatedMember.packageDuration);
+        members[memberIndex].paymentMethod = updatedMember.paymentMethod;
+        
+        membersModule.saveMembers(members);
+        
+        membersModule.addActivity({
+            type: 'update_member',
+            title: `تحديث بيانات: ${updatedMember.fullName}`,
+            details: `تم تحديث بيانات العضو ${updatedMember.fullName}`,
+            memberId: updatedMember.id,
+            amount: 0,
+            userId: membersModule.getCurrentUser(),
+            timestamp: new Date().toLocaleString('ar-EG')
+        });
+    }
+}
+
+// معالجة طلب التجديد
+function processRenewalRequest(memberId, renewalData) {
+    if (typeof membersModule === 'undefined') {
+        showAlert('خطأ', 'نظام الأعضاء غير متاح', 'error');
+        return;
+    }
+    
+    const success = membersModule.renewMember(memberId, renewalData);
+    
+    if (success) {
+        closeRenewalModal();
+        showAlert('نجاح', 'تم تجديد اشتراك العضو بنجاح', 'success');
+        
+        if (typeof loadRenewableMembers === 'function') loadRenewableMembers();
+        if (typeof updateRenewalStats === 'function') updateRenewalStats();
+        if (typeof loadRecentRenewals === 'function') loadRecentRenewals();
+        
+    } else {
+        showAlert('خطأ', 'حدث خطأ أثناء التجديد', 'error');
+    }
+}
+
+// إغلاق مودال التجديد
+function closeRenewalModal() {
+    closeModal('renewalModal');
+    currentMemberData = null;
+}
+
+// =========== دوال التجديد الجماعي ===========
+
+// عرض التجديد الجماعي
+function showBulkRenewal() {
+    const selectedCount = document.querySelectorAll('.member-checkbox:checked').length;
+    
+    if (selectedCount === 0) {
+        showAlert('تحذير', 'يرجى اختيار أعضاء للتجديد الجماعي', 'warning');
+        return;
+    }
+    
+    const bulkMembersCount = document.getElementById('bulkMembersCount');
+    if (bulkMembersCount) bulkMembersCount.textContent = selectedCount;
+    
+    const membersList = document.getElementById('bulkMembersList');
+    if (membersList) {
+        let listHTML = '<ul style="list-style: none; padding: 0; margin: 0;">';
+        
+        document.querySelectorAll('.member-checkbox:checked').forEach(checkbox => {
+            const memberId = checkbox.value;
+            if (typeof membersModule !== 'undefined') {
+                const members = membersModule.getAllMembers();
+                const member = members.find(m => m.id === memberId);
+                if (member) {
+                    listHTML += `<li style="margin-bottom: 5px;">${member.fullName} (${member.id})</li>`;
+                }
+            }
+        });
+        
+        listHTML += '</ul>';
+        membersList.innerHTML = listHTML;
+    }
+    
+    loadBulkRenewalPackages();
+    
+    const today = new Date().toISOString().split('T')[0];
+    const bulkStartDate = document.getElementById('bulkRenewalStartDate');
+    if (bulkStartDate) bulkStartDate.value = today;
+    
+    openModal('bulkRenewalModal');
+}
+
+// تحميل الباقات للتجديد الجماعي
+function loadBulkRenewalPackages() {
+    const select = document.getElementById('bulkRenewalPackage');
+    if (!select || typeof membersModule === 'undefined') return;
+    
+    const packages = membersModule.getAllPackages();
+    select.innerHTML = '<option value="">اختر الباقة</option>';
+    
+    packages.forEach(pkg => {
+        const option = document.createElement('option');
+        option.value = pkg.id;
+        option.textContent = `${pkg.name} - ${pkg.price} ج.م (${pkg.duration} يوم)`;
+        option.setAttribute('data-price', pkg.price);
+        option.setAttribute('data-duration', pkg.duration);
+        select.appendChild(option);
+    });
+}
+
+// معالجة التجديد الجماعي
+function handleBulkRenewal() {
+    const packageSelect = document.getElementById('bulkRenewalPackage');
+    if (!packageSelect) return;
+    
+    const selectedOption = packageSelect.options[packageSelect.selectedIndex];
+    if (!selectedOption) return;
+    
+    const renewalData = {
+        packageId: packageSelect.value,
+        packageName: selectedOption.text.split(' - ')[0],
+        packagePrice: document.getElementById('bulkRenewalPrice')?.value || 0,
+        packageDuration: document.getElementById('bulkRenewalDuration')?.value || 0,
+        startDate: document.getElementById('bulkRenewalStartDate')?.value || new Date().toISOString().split('T')[0],
+        paymentMethod: document.getElementById('bulkRenewalPaymentMethod')?.value || 'cash',
+        notes: document.getElementById('bulkRenewalNotes')?.value || 'تجديد جماعي'
+    };
+    
+    if (!renewalData.packageId || !renewalData.packagePrice || !renewalData.packageDuration || !renewalData.startDate || !renewalData.paymentMethod) {
+        showAlert('خطأ', 'يرجى ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+    
+    let successCount = 0;
+    let failCount = 0;
+    
+    document.querySelectorAll('.member-checkbox:checked').forEach(checkbox => {
+        const memberId = checkbox.value;
+        if (typeof membersModule !== 'undefined') {
+            const success = membersModule.renewMember(memberId, renewalData);
+            if (success) successCount++;
+            else failCount++;
+        }
+    });
+    
+    closeModal('bulkRenewalModal');
+    
+    if (successCount > 0) {
+        showAlert('تم التجديد', `تم تجديد ${successCount} اشتراك بنجاح${failCount > 0 ? `، فشل ${failCount}` : ''}`, 'success');
+        
+        if (typeof loadRenewableMembers === 'function') loadRenewableMembers();
+        if (typeof updateRenewalStats === 'function') updateRenewalStats();
+        if (typeof loadRecentRenewals === 'function') loadRecentRenewals();
+        
+        const form = document.getElementById('bulkRenewalForm');
+        if (form) form.reset();
+    } else {
+        showAlert('خطأ', 'فشل تجديد جميع الاشتراكات', 'error');
+    }
+}
+
+// =========== دوال الاختيار والتحديد ===========
+
+// تحديد/إلغاء تحديد الكل
+function toggleSelectAll(checked) {
+    document.querySelectorAll('.member-checkbox').forEach(checkbox => {
+        checkbox.checked = checked;
+    });
+    updateSelectedCount();
+}
+
+// تحديث عدد الأعضاء المحددين
+function updateSelectedCount() {
+    const selectedCount = document.querySelectorAll('.member-checkbox:checked').length;
+    const selectedCountEl = document.getElementById('selectedCount');
+    const bulkRenewBtn = document.getElementById('bulkRenewBtn');
+    
+    if (selectedCountEl) selectedCountEl.textContent = selectedCount;
+    if (bulkRenewBtn) bulkRenewBtn.disabled = selectedCount === 0;
+}
+
+// تجديد الأعضاء المحددين
+function renewSelectedMembers() {
+    const selectedCount = document.querySelectorAll('.member-checkbox:checked').length;
+    
+    if (selectedCount === 1) {
+        const memberId = document.querySelector('.member-checkbox:checked').value;
+        openRenewalModal(memberId);
+    } else {
+        showBulkRenewal();
+    }
+}
+
+// =========== تهيئة الصفحة ===========
+document.addEventListener('DOMContentLoaded', function() {
+    // تحميل الباقات
+    if (typeof loadPackagesToSelect !== 'undefined') {
+        loadPackagesToSelect('renewalPackage');
+        loadPackagesToSelect('bulkRenewalPackage');
+        loadPackagesToSelect('editPackage');
+    } else {
+        // إذا لم تكن الدالة موجودة، أنشئها بسيطة
+        const loadSimplePackages = function(selectId) {
+            const select = document.getElementById(selectId);
+            if (select) {
+                select.innerHTML = `
+                    <option value="">اختر الباقة</option>
+                    <option value="1" data-price="500" data-duration="30">باقة الذهبية - 500 ج.م (30 يوم)</option>
+                    <option value="2" data-price="350" data-duration="30">باقة الفضية - 350 ج.م (30 يوم)</option>
+                    <option value="3" data-price="250" data-duration="30">باقة البرونزية - 250 ج.م (30 يوم)</option>
+                `;
+            }
+        };
+        
+        loadSimplePackages('renewalPackage');
+        loadSimplePackages('bulkRenewalPackage');
+        loadSimplePackages('editPackage');
+    }
+    
+    // تعيين تاريخ اليوم
+    const today = new Date().toISOString().split('T')[0];
+    const renewalStartDate = document.getElementById('renewalStartDate');
+    const bulkRenewalStartDate = document.getElementById('bulkRenewalStartDate');
+    const editStartDate = document.getElementById('editStartDate');
+    
+    if (renewalStartDate) renewalStartDate.value = today;
+    if (bulkRenewalStartDate) bulkRenewalStartDate.value = today;
+    if (editStartDate) editStartDate.value = today;
+    
+    // تحميل البيانات
+    if (typeof membersModule !== 'undefined') {
+        loadRenewableMembers();
+        updateRenewalStats();
+        loadRecentRenewals();
+    }
+    
+    // إعداد البحث
+    const searchInput = document.getElementById('renewSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            searchRenewableMembers(e.target.value);
+        });
+    }
+    
+    // إعداد استماع لتغيير الباقة
+    const renewalPackage = document.getElementById('renewalPackage');
+    if (renewalPackage) {
+        renewalPackage.addEventListener('change', updateRenewalPrice);
+    }
+    
+    const editPackage = document.getElementById('editPackage');
+    if (editPackage) {
+        editPackage.addEventListener('change', updateEditPrice);
+    }
+    
+    const bulkRenewalPackage = document.getElementById('bulkRenewalPackage');
+    if (bulkRenewalPackage) {
+        bulkRenewalPackage.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (selectedOption && selectedOption.value) {
+                const priceEl = document.getElementById('bulkRenewalPrice');
+                const durationEl = document.getElementById('bulkRenewalDuration');
+                
+                if (priceEl) priceEl.value = selectedOption.getAttribute('data-price');
+                if (durationEl) durationEl.value = selectedOption.getAttribute('data-duration');
+            }
+        });
+    }
+});
+
+// =========== دوال مساعدة ===========
+window.viewMember = function(memberId) {
+    if (typeof GymManagement !== 'undefined' && typeof GymManagement.viewMember === 'function') {
+        GymManagement.viewMember(memberId);
+    } else {
+        showAlert('عرض العضو', `عرض بيانات العضو ${memberId}`);
+    }
+};
+
+window.closeRenewalModal = closeRenewalModal;
+window.switchTab = switchTab;
+window.quickRenewSamePackage = quickRenewSamePackage;
+window.quickRenewWithCurrentData = quickRenewWithCurrentData;
+window.copyCurrentData = copyCurrentData;
+window.processRenewal = processRenewal;
+window.updateAndRenew = updateAndRenew;
+window.showBulkRenewal = showBulkRenewal;
+window.handleBulkRenewal = handleBulkRenewal;
+window.toggleSelectAll = toggleSelectAll;
+window.updateSelectedCount = updateSelectedCount;
+window.renewSelectedMembers = renewSelectedMembers;
+window.filterRenewableMembers = filterRenewableMembers;
+window.sendReminder = sendReminder;
+window.viewAllRenewals = viewAllRenewals;
+</script>
+    <style>
+        .member-info-card h4 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .member-info-card p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .status.warning {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+        
+        .stat-change.warning {
+            color: var(--warning);
+        }
+        
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #f5f7fa;
+            border-top: 1px solid var(--gray);
+        
+            
+        }
+
+    .modal-tabs {
+        display: flex;
+        border-bottom: 2px solid #f0f0f0;
+        margin: 0 -20px;
+        padding: 0 20px;
+    }
+    
+    .tab-btn {
+        padding: 12px 20px;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        font-size: 14px;
+        color: #666;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .tab-btn:hover {
+        color: #2196F3;
+        background-color: #f8f9fa;
+    }
+    
+    .tab-btn.active {
+        color: #2196F3;
+        border-bottom-color: #2196F3;
+        font-weight: bold;
+    }
+    
+    .tab-content {
+        display: none;
+        padding: 20px 0;
+        min-height: 300px;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .member-summary-card {
+        background: linear-gradient(135deg, #667eea 0%, #000000 100%);
+        border-radius: 12px;
+        color: white;
+        padding: 25px;
+        margin-bottom: 20px;
+    }
+    
+    .member-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .member-header h4 {
+        color: white;
+        margin: 0;
+        font-size: 18px;
+    }
+    
+    .member-details-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .detail-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 12px;
+        border-radius: 8px;
+        backdrop-filter: blur(10px);
+    }
+    
+    .detail-label {
+        font-size: 12px;
+        opacity: 0.8;
+        margin-bottom: 5px;
+    }
+    
+    .detail-value {
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .quick-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .quick-actions .btn {
+        flex: 1;
+        min-width: 150px;
+    }
+    
+    .tab-footer {
+        display: none;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+    
+    .tab-footer.active {
+        display: flex;
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        border: none;
+        color: white;
+    }
+    
+    .btn-warning {
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        border: none;
+        color: white;
+    }
+
+    </style>
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المستخدمين - نظام إدارة الجيم</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- الشريط الجانبي -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-dumbbell"></i>
+                <h2>GYM<span>PRO</span></h2>
+            </div>
+            <button class="close-sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="members.html" class="menu-item">
+                <i class="fas fa-users"></i>
+                <span>إدارة الأعضاء</span>
+            </a>
+            <a href="calendar.html" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>التقويم والاشتراكات</span>
+            </a>
+            <a href="users.html" class="menu-item active">
+                <i class="fas fa-user-cog"></i>
+                <span>المستخدمين</span>
+            </a>
+            <a href="packages.html" class="menu-item">
+                <i class="fas fa-box"></i>
+                <span>الاشتراكات</span>
+            </a>
+            <a href="settings.html" class="menu-item">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </a>
+                 <a href="notifications.html" class="menu-item active">
+                <i class="fas fa-bell"></i>
+                <span>الإشعارات</span>
+            </a>
+             <a href="renew.html" class="menu-item active">
+                <i class="fas fa-sync-alt"></i>
+                <span>تجديد الاشتراكات</span>
+            </a>
+       <a href="deleted-members.html" class="menu-item active">
+                <i class="fas fa-trash-restore"></i>
+                <span>السجلات المحذوفة</span>
+            </a>
+        </div>
+        
+        
+    </div>
+    
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="page-title">إدارة المستخدمين</div>
+        
+        <div class="top-bar-actions">
+            <button class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+            
+            
+        </div>
+    </div>
+    
+    <!-- لوحة الإشعارات -->
+    <div class="notifications-panel">
+        <div class="notifications-header">
+            <h3>الإشعارات</h3>
+            <button class="mark-all-read">تحديد الكل كمقروء</button>
+        </div>
+        <div class="notifications-list">
+            <!-- سيتم ملؤها بالجافاسكريبت -->
+        </div>
+    </div>
+    
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+        <!-- رأس الصفحة -->
+        <div class="page-header">
+            <h1>إدارة المستخدمين</h1>
+            <div class="page-actions">
+                <div class="search-box">
+                                  </div>
+                <button class="btn btn-primary" onclick="GymManagement.openModal('addUserModal')">
+                    <i class="fas fa-plus"></i>
+                    <span>إضافة مستخدم جديد</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- جدول المستخدمين -->
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">قائمة المستخدمين</div>
+                <div class="table-filters">
+                    <select class="filter-select" onchange="filterUsers(this.value)">
+                        <option value="all">جميع المستخدمين</option>
+                        <option value="admin">المسؤولون فقط</option>
+                        <option value="assistant">المساعدون فقط</option>
+                        <option value="viewer">المتفرجون فقط</option>
+                        <option value="online">المتصلون فقط</option>
+                        <option value="offline">غير المتصلين</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table users-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم المستخدم</th>
+                            <th>الاسم الكامل</th>
+                            <th>الدور</th>
+                            <th>البريد الإلكتروني</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- سيتم ملؤها بالجافاسكريبت -->
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 30px;">
+                                <div class="loading">
+                                    <div class="loading-spinner"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- إحصائيات المستخدمين -->
+        <div class="stats-cards" style="margin-top: 30px;">
+            <div class="stat-card">
+                <div class="stat-icon members" style="background-color: rgba(33, 150, 243, 0.1); color: var(--info);">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3>المسؤولون</h3>
+                <div class="stat-value" id="adminCount">0</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon male" style="background-color: rgba(255, 152, 0, 0.1); color: var(--warning);">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3>المساعدون</h3>
+                <div class="stat-value" id="assistantCount">0</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon female" style="background-color: rgba(76, 175, 80, 0.1); color: var(--success);">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3>المتفرجون</h3>
+                <div class="stat-value" id="viewerCount">0</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon revenue" style="background-color: rgba(156, 39, 176, 0.1); color: #9c27b0;">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <h3>المتصلون الآن</h3>
+                <div class="stat-value" id="onlineCount">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال إضافة مستخدم جديد -->
+    <div class="modal-overlay" id="addUserModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>إضافة مستخدم جديد</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addUserForm">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="newUsername">اسم المستخدم *</label>
+                            <input type="text" id="newUsername" required>
+                            <small style="color: var(--text-light);">سيستخدم هذا الاسم لتسجيل الدخول</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">كلمة المرور *</label>
+                            <input type="password" id="newPassword" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="newFullName">الاسم الكامل *</label>
+                            <input type="text" id="newFullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newUserRole">الدور *</label>
+                            <select id="newUserRole" required>
+    <option value="">اختر الدور</option>
+    <option value="admin">مسؤول</option>
+    <option value="assistant">مساعد</option>
+    <option value="viewer">متفرج</option>
+</select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-row">
+    <div class="form-group">
+        <label for="newEmail">البريد الإلكتروني (ليس اجباري)</label>
+        <input type="email" id="newEmail">
+    </div>
+    <div class="form-group">
+        <label for="newPhone"> (ليس اجباري)رقم الهاتف</label>
+        <input type="tel" id="newPhone">
+    </div>
+</div>
+                      
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="userPermissions">الصلاحيات</label>
+                        <div id="userPermissions" style="background: #f5f5f5; padding: 15px; border-radius: 8px;">
+                            <div id="permissionsList">
+                                <!-- سيتم ملؤها بالجافاسكريبت -->
+                            </div>
+                        </div>
+                        <small style="color: var(--text-light);">سيتم تعيين الصلاحيات تلقائياً حسب الدور</small>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button type="button" class="btn btn-secondary" onclick="GymManagement.closeModal(document.getElementById('addUserModal'))">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        حفظ المستخدم
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- نموذج تعديل المستخدم -->
+<div id="editUserModal" class="modal-overlay">
+    <div class="modal" style="max-width: 600px;">
+        <div class="modal-header">
+            <h3>تعديل المستخدم</h3>
+            <button class="close-modal" onclick="GymManagement.closeModal(this.closest('.modal-overlay'))">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+                
+                <div class="form-group">
+                    <label for="editUsername">اسم المستخدم *</label>
+                    <input type="text" id="editUsername" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editName">الاسم الكامل *</label>
+                    <input type="text" id="editName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editEmail">البريد الإلكتروني *</label>
+                    <input type="email" id="editEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editPhone">رقم الهاتف</label>
+                    <input type="tel" id="editPhone">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editRole">الدور *</label>
+                    <select id="editRole" required>
+                        <option value="">اختر الدور</option>
+                        <option value="admin">مسؤول</option>
+                        <option value="assistant">مساعد</option>
+                        <option value="viewer">متفرج</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editStatus">الحالة</label>
+                    <select id="editStatus">
+                        <option value="online">متصل</option>
+                        <option value="offline">غير متصل</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editPassword">كلمة المرور الجديدة</label>
+                    <input type="password" id="editPassword" placeholder="اتركه فارغاً إذا لم ترد التغيير">
+                    <small style="color: #666;">اترك الحقل فارغاً للحفاظ على كلمة المرور الحالية</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editConfirmPassword">تأكيد كلمة المرور</label>
+                    <input type="password" id="editConfirmPassword">
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="GymManagement.closeModal(document.getElementById('editUserModal'))">
+                إلغاء
+            </button>
+            <button class="btn btn-primary" onclick="saveUserChanges()">
+                <i class="fas fa-save"></i> حفظ التغييرات
+            </button>
+        </div>
+    </div>
+</div>
+<script   type="module"src="js/user.js"></script>
+<script  type="module"src="js/members.js"></script>
+<script src="js/login.js"></script>
+<!-- <script src="js/telegram.js"></script> -->
+
+    <script src="js/script.js"></script>
+    <script>
+
+        // تهيئة الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            // تحميل الأدوار في القوائم المنسدلة
+            if (window.loadRolesToSelect) {
+                window.loadRolesToSelect('newUserRole');
+            }
+            
+            // تحميل قائمة المستخدمين
+            loadUsers();
+            
+            // تحديث الإحصائيات
+            updateUserStats();
+            
+            // إعداد نموذج إضافة مستخدم
+            const addUserForm = document.getElementById('addUserForm');
+            if (addUserForm) {
+                addUserForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleAddUser();
+                });
+                
+                // تحديث الصلاحيات عند تغيير الدور
+                const roleSelect = document.getElementById('newUserRole');
+                if (roleSelect) {
+                    roleSelect.addEventListener('change', function() {
+                        updatePermissionsByRole(this.value);
+                    });
+                }
+            }
+            
+            // إعداد البحث
+            const searchInput = document.querySelector('.search-box input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    GymManagement.handleSearch(e.target.value);
+                });
+            }
+        });
+        
+        // تحميل المستخدمين
+        function loadUsers() {
+            const users = usersModule.getAllUsers();
+            GymManagement.displayUsers(users);
+        }
+        
+        // تحديث إحصائيات المستخدمين
+        function updateUserStats() {
+            const users = usersModule.getAllUsers();
+            
+            const adminCount = users.filter(u => u.role === 'admin').length;
+            const assistantCount = users.filter(u => u.role === 'assistant').length;
+            const viewerCount = users.filter(u => u.role === 'viewer').length;
+            const onlineCount = users.filter(u => u.status === 'online').length;
+            
+            document.getElementById('adminCount').textContent = adminCount;
+            document.getElementById('assistantCount').textContent = assistantCount;
+            document.getElementById('viewerCount').textContent = viewerCount;
+            document.getElementById('onlineCount').textContent = onlineCount;
+        }
+        
+        // تصفية المستخدمين
+        function filterUsers(filter) {
+            const users = usersModule.getAllUsers();
+            let filteredUsers = users;
+            
+            switch(filter) {
+                case 'admin':
+                    filteredUsers = users.filter(u => u.role === 'admin');
+                    break;
+                case 'assistant':
+                    filteredUsers = users.filter(u => u.role === 'assistant');
+                    break;
+                case 'viewer':
+                    filteredUsers = users.filter(u => u.role === 'viewer');
+                    break;
+                case 'online':
+                    filteredUsers = users.filter(u => u.status === 'online');
+                    break;
+                case 'offline':
+                    filteredUsers = users.filter(u => u.status === 'offline');
+                    break;
+                default:
+                    filteredUsers = users;
+            }
+            
+            GymManagement.displayUsers(filteredUsers);
+        }
+        
+        // تحديث الصلاحيات حسب الدور
+        function updatePermissionsByRole(role) {
+            const permissionsList = document.getElementById('permissionsList');
+            if (!permissionsList) return;
+            
+            const permissions = usersModule.getPermissionsByRole(role);
+            
+            if (permissions.length === 0) {
+                permissionsList.innerHTML = '<p>لا توجد صلاحيات محددة</p>';
+                return;
+            }
+            
+            let permissionsHTML = '<ul style="list-style: none; padding: 0; margin: 0;">';
+            permissions.forEach(permission => {
+                const permissionText = getPermissionText(permission);
+                permissionsHTML += `
+                    <li style="margin-bottom: 8px; display: flex; align-items: center;">
+                        <i class="fas fa-check-circle" style="color: var(--success); margin-left: 10px;"></i>
+                        ${permissionText}
+                    </li>
+                `;
+            });
+            permissionsHTML += '</ul>';
+            
+            permissionsList.innerHTML = permissionsHTML;
+        }
+        
+        // الحصول على نص الصلاحية
+        function getPermissionText(permission) {
+            const permissionsMap = {
+                'all': 'جميع الصلاحيات',
+                'view_members': 'عرض الأعضاء',
+                'add_members': 'إضافة أعضاء',
+                'renew_subscriptions': 'تجديد الاشتراكات',
+                'view_stats': 'عرض الإحصائيات',
+                'view_calendar': 'عرض التقويم',
+                'manage_users': 'إدارة المستخدمين',
+                'manage_packages': 'إدارة الباقات',
+                'manage_settings': 'إدارة الإعدادات'
+            };
+            
+            return permissionsMap[permission] || permission;
+        }
+        
+        // معالجة إضافة مستخدم جديد
+        function handleAddUser() {
+            const userData = {
+                username: document.getElementById('newUsername').value,
+                password: document.getElementById('newPassword').value,
+                name: document.getElementById('newFullName').value,
+                role: document.getElementById('newUserRole').value,
+                email: document.getElementById('newEmail').value,
+                phone: document.getElementById('newPhone').value
+            };
+            
+            // التحقق من صحة البيانات
+            if (!userData.username || !userData.password || !userData.name || !userData.role) {
+                GymManagement.showCustomAlert('خطأ', 'يرجى ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+            
+            // التحقق من عدم وجود اسم مستخدم مكرر
+            const existingUsers = usersModule.getAllUsers();
+            const usernameExists = existingUsers.some(u => u.username === userData.username);
+            
+            if (usernameExists) {
+                GymManagement.showCustomAlert('خطأ', 'اسم المستخدم موجود بالفعل', 'error');
+                return;
+            }
+            
+            // إضافة المستخدم
+            const newUser = usersModule.addUser(userData);
+            
+            if (newUser) {
+                GymManagement.closeModal(document.getElementById('addUserModal'));
+                GymManagement.showCustomAlert('تمت الإضافة', 'تم إضافة المستخدم بنجاح', 'success');
+                
+                // تحديث قائمة المستخدمين
+                loadUsers();
+                
+                // تحديث الإحصائيات
+                updateUserStats();
+                
+                // إعادة تعيين النموذج
+                document.getElementById('addUserForm').reset();
+            } else {
+                GymManagement.showCustomAlert('خطأ', 'حدث خطأ أثناء إضافة المستخدم', 'error');
+            }
+        }
+        
+        
+    </script>
+</body>
+</html>

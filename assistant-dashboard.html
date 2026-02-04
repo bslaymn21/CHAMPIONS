@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة المساعد - نظام إدارة الجيم</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* تحسينات خاصة بصفحة المساعد */
+        .assistant-dashboard {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .quick-action-btn {
+            background: white;
+            border: none;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .quick-action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .quick-action-btn i {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .quick-action-btn .action-text {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .action-subtext {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+        
+        .dashboard-widgets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .widget {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .widget-header h3 {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 18px;
+        }
+        
+        .widget-action {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .recent-members-list, .expiring-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .member-item, .subscription-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid var(--gray);
+            transition: background-color 0.3s;
+        }
+        
+        .member-item:hover, .subscription-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .member-info {
+            flex: 1;
+        }
+        
+        .member-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .member-phone {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .membership-status {
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+        
+        .status-expiring {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-expired {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--danger);
+        }
+        
+        /* نمط خاص للنماذج السريعة */
+        .inline-form {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .inline-form h3 {
+            margin-bottom: 20px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group-inline {
+            margin-bottom: 15px;
+        }
+        
+        .form-group-inline label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .form-group-inline input,
+        .form-group-inline select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gray);
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .inline-form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* نمط التبويبات */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--gray);
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn:hover {
+            color: var(--text-color);
+        }
+        
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* تحسين جدول الأعضاء */
+        .members-table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .table-actions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .table-search {
+            position: relative;
+            width: 300px;
+        }
+        
+        .table-search input {
+            width: 100%;
+            padding: 8px 35px 8px 15px;
+            border: 1px solid var(--gray);
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .table-search i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+        
+        /* زر الإضافة السريعة */
+        .floating-add-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .floating-add-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        /* تحسينات للجوال */
+        @media (max-width: 768px) {
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-widgets {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-search {
+                width: 100%;
+            }
+            
+            .floating-add-btn {
+                bottom: 20px;
+                left: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="assistant-dashboard">
+    <!-- الشريط الجانبي -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-dumbbell"></i>
+                <h2>GYM<span>PRO</span></h2>
+            </div>
+            <button class="close-sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="#" class="menu-item active" onclick="showTab('dashboard')">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showTab('members')">
+                <i class="fas fa-users"></i>
+                <span>الأعضاء</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showTab('add-member')">
+                <i class="fas fa-user-plus"></i>
+                <span>إضافة عضو</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showTab('renew')">
+                <i class="fas fa-sync-alt"></i>
+                <span>تجديد اشتراكات</span>
+            </a>
+            <!-- <a href="#" class="menu-item" onclick="showTab('payments')">
+                <i class="fas fa-credit-card"></i>
+                <span>المدفوعات</span>
+            </a> -->
+            <a href="#" class="menu-item" onclick="showTab('calendar')">
+                <i class="fas fa-calendar-alt"></i>
+                <span>التقويم</span>
+            </a>
+        </div>
+        
+        <div class="user-profile">
+            <div class="user-avatar" id="userAvatar">م</div>
+            <div class="user-info">
+                <h4 id="userName">المساعد الأول</h4>
+                <span id="userRole">مساعد</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="page-title" id="pageTitle">لوحة التحكم</div>
+        
+        <div class="top-bar-actions">
+            <button class="notification-btn" onclick="toggleNotifications()">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationCount">0</span>
+            </button>
+    
+            <div class="user-dropdown">
+                <button class="user-dropdown-btn">
+                    <span id="userNameTop">المساعد الأول</span>
+                </button>
+                
+              
+                
+            </div>
+         <button class="logout-btn" onclick="logoutUser()" title="تسجيل الخروج">
+        <i class="fas fa-sign-out-alt"></i>
+        <span class="logout-text">خروج</span>
+    </button>
+
+        </div>
+    </div>
+    
+    <!-- لوحة الإشعارات -->
+    <div class="notifications-panel">
+        <div class="notifications-header">
+            <h3>الإشعارات</h3>
+            <button class="mark-all-read" onclick="markAllNotificationsAsRead()">تحديد الكل كمقروء</button>
+        </div>
+        <div class="notifications-list" id="notificationsList">
+            <!-- سيتم ملؤها بالجافاسكريبت -->
+        </div>
+    </div>
+    
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+        <!-- محتوى التبويبات -->
+        <div id="tabContents">
+            <!-- تبويب لوحة التحكم -->
+            <div class="tab-content active" id="dashboard-tab">
+                <!-- الإجراءات السريعة -->
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="showTab('add-member')">
+                        <i class="fas fa-user-plus"></i>
+                        <span class="action-text">إضافة عضو جديد</span>
+                        <span class="action-subtext">تسجيل عضو جديد في النظام</span>
+                    </button>
+                    
+                    <button class="quick-action-btn" onclick="showTab('renew')">
+                        <i class="fas fa-sync-alt"></i>
+                        <span class="action-text">تجديد اشتراك</span>
+                        <span class="action-subtext">تجديد اشتراك عضو</span>
+                    </button>
+                </div>
+                
+                <!-- الإحصائيات -->
+                <div class="stats-cards">
+                    <div class="stat-card" data-stat="total">
+                        <div class="stat-icon members">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>إجمالي المشتركين</h3>
+                        <div class="stat-value" id="totalMembers">0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span id="totalMembersChange">+0 هذا الشهر</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" data-stat="active">
+                        <div class="stat-icon members" style="background-color: rgba(76, 175, 80, 0.1); color: #4caf50;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3>المشتركين النشطين</h3>
+                        <div class="stat-value" id="activeMembers">0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-check"></i>
+                            <span id="activePercentage">0% نشطين</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" data-stat="expiring">
+                        <div class="stat-icon expiring">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>على وشك الانتهاء</h3>
+                        <div class="stat-value" id="expiringMembers">0</div>
+                        <div class="stat-change negative">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>يتطلب متابعة</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" data-stat="revenue">
+                        <div class="stat-icon revenue">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <h3>إيرادات الشهر</h3>
+                        <div class="stat-value" id="monthlyRevenue">0 ج.م</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span id="revenueChange">+0% عن الشهر الماضي</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- واجهات العرض -->
+                <div class="dashboard-widgets">
+                    <!-- الأعضاء الجدد -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3><i class="fas fa-user-plus"></i> الأعضاء الجدد</h3>
+                            <a href="#" class="widget-action" onclick="showTab('members')">عرض الكل</a>
+                        </div>
+                        <div class="recent-members-list" id="recentMembers">
+                            <!-- سيتم ملؤها بالجافاسكريبت -->
+                        </div>
+                    </div>
+                    
+                    <!-- الاشتراكات القريبة من الانتهاء -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3><i class="fas fa-clock"></i> اشتراكات تنتهي قريباً</h3>
+                            <a href="#" class="widget-action" onclick="showExpiring()">عرض الكل</a>
+                        </div>
+                        <div class="expiring-list" id="expiringSubscriptions">
+                            <!-- سيتم ملؤها بالجافاسكريبت -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- النشاط الأخير -->
+                <div class="recent-activity">
+                    <div class="section-header">
+                        <h2>النشاط الأخير</h2>
+                    </div>
+                    <div class="activity-list" id="recentActivity">
+                        <!-- سيتم ملؤها بالجافاسكريبت -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- تبويب الأعضاء -->
+            <div class="tab-content" id="members-tab">
+                <div class="page-header">
+                    <h1>إدارة الأعضاء</h1>
+                    <div class="page-actions">
+                        <div class="search-box">
+                            <input type="text" placeholder="بحث عن عضو..." id="memberSearch">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <button class="btn btn-primary" onclick="showTab('add-member')">
+                            <i class="fas fa-user-plus"></i> إضافة عضو جديد
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- مرشحات الأعضاء -->
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterMembers('all')">الكل</button>
+                    <button class="filter-btn" onclick="filterMembers('active')">نشط</button>
+                    <button class="filter-btn" onclick="filterMembers('expiring')">قريب الانتهاء</button>
+                    <button class="filter-btn" onclick="filterMembers('expired')">منتهي</button>
+                    <button class="filter-btn" onclick="filterMembers('new')">جديد</button>
+                </div>
+                
+                <!-- جدول الأعضاء -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="table-title">قائمة الأعضاء</div>
+                        <div class="table-actions-header">
+                            <div class="table-search">
+                                <input type="text" placeholder="بحث..." id="tableSearch">
+                                <i class="fas fa-search"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table members-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>الاسم</th>
+                                    <th>رقم الهاتف</th>
+                                    <th>نوع الاشتراك</th>
+                                    <th>تاريخ الانضمام</th>
+                                    <th>تاريخ الانتهاء</th>
+                                      <th>أضيف بواسطة</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="membersTableBody">
+                                <!-- سيتم ملؤها بالجافاسكريبت -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- تبويب إضافة عضو -->
+            <div class="tab-content" id="add-member-tab">
+                <div class="page-header">
+                    <h1>إضافة عضو جديد</h1>
+                </div>
+                
+                <!-- نموذج إضافة عضو -->
+                <form id="addMemberForm" class="inline-form">
+                    <h3><i class="fas fa-user-plus"></i> معلومات العضو الأساسية</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group-inline">
+                            <label for="memberName">الاسم الكامل *</label>
+                            <input type="text" id="memberName" required>
+                        </div>
+                        
+                        <div class="form-group-inline">
+                            <label for="memberPhone">رقم الهاتف *</label>
+                            <input type="tel" id="memberPhone" required>
+                        </div>
+                        
+                        <div class="form-group-inline">
+                            <label for="memberEmail">(ليس اجباري )البريد الإلكتروني</label>
+                            <input type="email" id="memberEmail">
+                        </div> 
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group-inline">
+                            <label for="memberGender">الجنس *</label>
+                            <select id="memberGender" required>
+                                <option value="">اختر الجنس</option>
+                                <option value="male">ذكر</option>
+                                <option value="female">أنثى</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group-inline">
+                            <label for="memberAge">العمر</label>
+                            <input type="number" id="memberAge" min="16" max="80">
+                        </div>
+                        
+                        <div class="form-group-inline">
+                            <label for="memberAddress"> (ليس اجباري )العنوان</label>
+                            <input type="text" id="memberAddress">
+                        </div> 
+                    </div>
+                    
+                    <h3><i class="fas fa-id-card"></i> معلومات الاشتراك</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group-inline">
+                            <label for="membershipType">نوع الاشتراك *</label>
+                            <select id="membershipType" required>
+                                <option value="">اختر نوع الاشتراك</option>
+                                <!-- سيتم ملؤها بالجافاسكريبت -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group-inline">
+                            <label for="startDate">تاريخ البدء *</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        
+                        <div class="form-group-inline">
+                            <label for="paymentMethod">طريقة الدفع *</label>
+                            <select id="paymentMethod" required>
+                                <option value="cash">نقداً</option>
+                                <option value="vodafone_cash">فودافون كاش</option>
+                                <option value="instapay">انستا باي</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group-inline">
+                            <label for="paidAmount">المبلغ المدفوع (ج.م)</label>
+                            <input type="number" id="paidAmount" min="0" value="0">
+                        </div>
+                        
+                        <div class="form-group-inline">
+                            <label for="notes">ملاحظات</label>
+                            <input type="text" id="notes" placeholder="ملاحظات إضافية...">
+                        </div>
+                    </div>
+                    
+                    <div class="inline-form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="showTab('dashboard')">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ العضو
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- تبويب تجديد الاشتراكات -->
+            <div class="tab-content" id="renew-tab">
+                <div class="page-header">
+                    <h1>تجديد الاشتراكات</h1>
+                </div>
+                
+                <!-- قائمة الأعضاء الذين يحتاجون تجديد -->
+                <div class="widget" style="margin-bottom: 20px;">
+                    <div class="widget-header">
+                        <h3><i class="fas fa-exclamation-triangle"></i> اشتراكات تحتاج تجديد</h3>
+                    </div>
+                    <div class="expiring-list" id="renewalList">
+                        <!-- سيتم ملؤها بالجافاسكريبت -->
+                    </div>
+                </div>
+                
+                <!-- نموذج التجديد -->
+                <form id="renewalForm" class="inline-form">
+                    <h3><i class="fas fa-sync-alt"></i> تجديد اشتراك</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group-inline">
+                            <label for="renewMember">اختر العضو *</label>
+                            <select id="renewMember" required>
+                                <option value="">اختر العضو</option>
+                                <!-- سيتم ملؤها بالجافاسكريبت -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group-inline">
+                            <label for="renewalType">نوع التجديد *</label>
+                            <select id="renewalType" required>
+                                <option value="">اختر نوع التجديد</option>
+                                <!-- سيتم ملؤها بالجافاسكريبت -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group-inline">
+                            <label for="renewalAmount">المبلغ المدفوع (ج.م) *</label>
+                            <input type="number" id="renewalAmount" required min="0">
+                        </div>
+                        
+                        <div class="form-group-inline">
+                            <label for="renewalDate">تاريخ التجديد *</label>
+                            <input type="date" id="renewalDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group-inline">
+                            <label for="renewalPaymentMethod">طريقة الدفع *</label>
+                            <select id="renewalPaymentMethod" required>
+                                <option value="cash">نقداً</option>
+                                <option value="vodafone_cash">فودافون كاش</option>
+                                <option value="instapay">انستا باي</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group-inline">
+                            <label for="renewalNotes">ملاحظات</label>
+                            <input type="text" id="renewalNotes" placeholder="ملاحظات إضافية...">
+                        </div>
+                    </div>
+                    
+                    <div class="inline-form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="showTab('dashboard')">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sync-alt"></i> تجديد الاشتراك
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- تبويب التقويم -->
+            <div class="tab-content" id="calendar-tab">
+                <div class="page-header">
+                    <h1>تقويم الاشتراكات</h1>
+                </div>
+                
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <div class="calendar-nav">
+                            <button class="prev-month" onclick="changeMonth(-1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <h2 class="current-month" id="currentMonth">يناير 2024</h2>
+                            <button class="next-month" onclick="changeMonth(1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-secondary" onclick="showToday()">
+                                <i class="fas fa-calendar-day"></i> اليوم
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-grid" id="calendarGrid">
+                        <div class="calendar-day-header">الأحد</div>
+                        <div class="calendar-day-header">الاثنين</div>
+                        <div class="calendar-day-header">الثلاثاء</div>
+                        <div class="calendar-day-header">الأربعاء</div>
+                        <div class="calendar-day-header">الخميس</div>
+                        <div class="calendar-day-header">الجمعة</div>
+                        <div class="calendar-day-header">السبت</div>
+                        <!-- سيتم ملؤها بالجافاسكريبت -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- زر الإضافة السريعة -->
+    <button class="floating-add-btn" onclick="quickAddMember()">
+        <i class="fas fa-plus"></i>
+    </button>
+    
+    <!-- نافذة تعديل العضو -->
+    <div class="modal-overlay" id="editMemberModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>تعديل بيانات العضو</h3>
+                <button class="close-modal" onclick="closeEditModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="editMemberContent">
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- نافذة تغيير كلمة المرور -->
+    <div class="modal-overlay" id="changePasswordModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>تغيير كلمة المرور</h3>
+                <button class="close-modal" onclick="closeChangePasswordModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="form-group">
+                        <label for="currentPassword">كلمة المرور الحالية *</label>
+                        <input type="password" id="currentPassword" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword">كلمة المرور الجديدة *</label>
+                        <input type="password" id="newPassword" required minlength="6">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmNewPassword">تأكيد كلمة المرور الجديدة *</label>
+                        <input type="password" id="confirmNewPassword" required>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeChangePasswordModal()">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">تغيير كلمة المرور</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- مودال تأكيد الخروج -->
+<div class="modal-overlay" id="logoutConfirmModal" style="display: none;">
+    <div class="modal" style="max-width: 400px;">
+        <div class="modal-header">
+            <h3><i class="fas fa-sign-out-alt" style="color: #ff4444; margin-left: 10px;"></i> تأكيد تسجيل الخروج</h3>
+            <button class="close-modal" onclick="closeLogoutModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, rgba(255, 68, 68, 0.1), rgba(255, 0, 0, 0.05)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fas fa-sign-out-alt" style="font-size: 36px; color: #ff4444;"></i>
+                </div>
+                <h4 style="margin: 0 0 10px; color: var(--text-color);">هل أنت متأكد من تسجيل الخروج؟</h4>
+                <p style="color: var(--text-light); margin: 0; line-height: 1.6;">سيتم إغلاق الجلسة الحالية والعودة لصفحة الدخول</p>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 25px;">
+                <button class="btn btn-secondary" onclick="closeLogoutModal()" style="flex: 1;">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button class="btn btn-danger" onclick="confirmLogout()" style="flex: 1;">
+                    <i class="fas fa-sign-out-alt"></i> نعم، سجل الخروج
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- مودال تسجيل الخروج -->
+<div class="modal-overlay" id="logoutModal" style="display: none;">
+    <div class="modal" style="max-width: 350px;">
+        <div class="modal-body">
+            <div style="text-align: center; padding: 30px 20px;">
+                <div class="spinner" style="width: 60px; height: 60px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                <h4 style="margin: 0 0 10px; color: var(--text-color);">جاري تسجيل الخروج</h4>
+                <p style="color: var(--text-light); margin: 0;">يرجى الانتظار...</p>
+            </div>
+        </div>
+    </div>
+</div>
+   
+    <script type="module" src="js/user.js"></script>
+    <script type="module" src="js/members.js"></script>
+    <script src="js/assistant.js"></script>
+    <!-- <script src="js/deleted-members.js"></script> -->
+    <script>
+  
+  // فقط الكود الأساسي لتهيئة الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('تم تحميل صفحة المساعد');
+        
+        // بدء النظام بعد تحميل الملفات
+        setTimeout(function() {
+            if (typeof initAssistantDashboard !== 'undefined') {
+                initAssistantDashboard();
+            } else {
+                console.error('❌ لم يتم تحميل وحدة المساعد');
+                // محاولة بديلة
+                location.reload();
+            }
+        }, 500);
+    });
+
+
+
+    
+// ==== الحل النهائي للخروج ====
+function quickLogout() {
+    // مسح بيانات المستخدم فقط
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userRole');
+    
+    // إعادة التوجيه إلى صفحة الدخول
+    window.location.href = '../index.html';
+}
+
+// استبدال زر الخروج القديم
+function fixLogoutButton() {
+    const logoutBtn = document.querySelector('.logout-btn');
+    
+    if (logoutBtn) {
+        // إزالة جميع الأحداث السابقة
+        logoutBtn.onclick = null;
+        
+        // إضافة الحدث الجديد
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (confirm('هل تريد تسجيل الخروج من النظام؟')) {
+                quickLogout();
+            }
+        });
+        
+        console.log('✅ تم إصلاح زر الخروج بنجاح');
+        return true;
+    }
+    
+    console.error('❌ زر الخروج غير موجود');
+    return false;
+}
+
+// تهيئة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 تهيئة نظام المساعد...');
+    
+    // إصلاح زر الخروج بعد تأخير بسيط
+    setTimeout(fixLogoutButton, 500);
+    
+    // إضافة اختصار لوحة المفاتيح (Ctrl+L)
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'l') {
+            e.preventDefault();
+            if (confirm('الخروج باستخدام Ctrl+L؟')) {
+                quickLogout();
+            }
+        }
+    });
+});
+
+// تصدير للاستخدام
+window.quickLogout = quickLogout;
+window.fixLogoutButton = fixLogoutButton;
+
+    </script>
+</body>
+</html>

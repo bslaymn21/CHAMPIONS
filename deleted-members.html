@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>السجلات المحذوفة - نظام إدارة الجيم</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .restore-btn {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+        
+        .restore-btn:hover {
+            background-color: rgba(76, 175, 80, 0.2);
+        }
+        
+        .deleted-by {
+            font-size: 12px;
+            color: var(--gray-dark);
+            margin-top: 5px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--gray);
+        }
+    </style>
+</head>
+<body>
+    <!-- الشريط الجانبي -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-dumbbell"></i>
+                <h2>GYM<span>PRO</span></h2>
+            </div>
+            <button class="close-sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="members.html" class="menu-item">
+                <i class="fas fa-users"></i>
+                <span>إدارة الأعضاء</span>
+            </a>
+            
+            <a href="calendar.html" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>التقويم والاشتراكات</span>
+            </a>
+            <a href="users.html" class="menu-item">
+                <i class="fas fa-user-cog"></i>
+                <span>المستخدمين</span>
+            </a>
+            <a href="packages.html" class="menu-item">
+                <i class="fas fa-box"></i>
+                <span>الاشتراكات</span>
+            </a>
+            <a href="settings.html" class="menu-item">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </a>
+            <a href="notifications.html" class="menu-item active">
+                <i class="fas fa-bell"></i>
+                <span>الإشعارات</span>
+            </a>
+            <a href="renew.html" class="menu-item active">
+                <i class="fas fa-sync-alt"></i>
+                <span>تجديد الاشتراكات</span>
+            </a>
+            <a href="deleted-members.html" class="menu-item active">
+                <i class="fas fa-trash-restore"></i>
+                <span>السجلات المحذوفة</span>
+            </a>
+        </div>
+        
+    </div>
+
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="page-title">السجلات المحذوفة</div>
+        <div class="top-bar-actions">
+            <button class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationBadge">0</span>
+            </button>
+            
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+        <!-- رأس الصفحة -->
+        <div class="page-header">
+            <h1>السجلات المحذوفة</h1>
+            <div class="page-actions">
+                
+                <button class="btn btn-primary" onclick="restoreAll()">
+                    <i class="fas fa-trash-restore"></i>
+                    <span>استرجاع الكل</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- جدول السجلات المحذوفة -->
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">قائمة الأعضاء المحذوفين</div>
+                <div class="search-box">
+                    <input type="text" id="searchDeleted" placeholder="ابحث في السجلات المحذوفة...">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الكود</th>
+                            <th>الاسم</th>
+                            <th>الباقة</th>
+                            <th>تاريخ الحذف</th>
+                            <th>تم الحذف بواسطة</th>
+                            <th>سبب الحذف</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deletedMembersTable">
+                        <!-- سيتم ملؤها بالجافاسكريبت -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- المودالات -->
+    <div class="modal-overlay" id="restoreModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>استرجاع العضو</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="restoreMessage">هل تريد استرجاع هذا العضو؟</p>
+                <div class="form-group">
+                    <label for="restoreNotes">ملاحظات الاسترجاع (اختياري)</label>
+                    <textarea id="restoreNotes" rows="3" placeholder="أضف ملاحظات عن سبب الاسترجاع..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('restoreModal')">إلغاء</button>
+                <button type="button" class="btn btn-primary" onclick="confirmRestore()">استرجاع</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة الإشعارات -->
+    <div class="notifications-panel">
+        <div class="notifications-header">
+            <h3>الإشعارات</h3>
+            <button class="mark-all-read">تحديد الكل كمقروء</button>
+        </div>
+        <div class="notifications-list">
+            <!-- سيتم ملؤها بالجافاسكريبت -->
+        </div>
+    </div>
+
+    <!-- إشعارات مخصصة -->
+    <div id="customAlertContainer"></div>
+
+    <script  type="module" src="js/user.js"></script>
+    <script  type="module" src="js/members.js"></script>
+    <script  type="module" src="js/login.js"></script>
+    <script  src="js/script.js"></script>
+    <script src="js/deleted-members.js"></script>
+</body>
+</html>

@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإعدادات - نظام إدارة الجيم</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- الشريط الجانبي -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-dumbbell"></i>
+                <h2>GYM<span>PRO</span></h2>
+            </div>
+            <button class="close-sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="members.html" class="menu-item">
+                <i class="fas fa-users"></i>
+                <span>إدارة الأعضاء</span>
+            </a>
+            <a href="calendar.html" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>التقويم والاشتراكات</span>
+            </a>
+            <a href="users.html" class="menu-item">
+                <i class="fas fa-user-cog"></i>
+                <span>المستخدمين</span>
+            </a>
+            <a href="packages.html" class="menu-item">
+                <i class="fas fa-box"></i>
+                <span>الاشتراكات</span>
+            </a>
+            <a href="settings.html" class="menu-item active">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </a>
+                 <a href="notifications.html" class="menu-item active">
+                <i class="fas fa-bell"></i>
+                <span>الإشعارات</span>
+            </a>
+             <a href="renew.html" class="menu-item active">
+                <i class="fas fa-sync-alt"></i>
+                <span>تجديد الاشتراكات</span>
+            </a>
+            <a href="deleted-members.html" class="menu-item active">
+                <i class="fas fa-trash-restore"></i>
+                <span>السجلات المحذوفة</span>
+            </a>
+            
+        </div>
+        
+        <div class="user-profile">
+            <div class="user-avatar">م</div>
+            <div class="user-info">
+                <h4>المسؤول الرئيسي</h4>
+                <span>مسؤول</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="page-title">الإعدادات</div>
+        
+        <div class="top-bar-actions">
+            <button class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+            
+            <div class="user-dropdown">
+                <button class="user-dropdown-btn">
+                    <i class="fas fa-user"></i>
+                    <span>المسؤول</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- لوحة الإشعارات -->
+    <div class="notifications-panel">
+        <div class="notifications-header">
+            <h3>الإشعارات</h3>
+            <button class="mark-all-read">تحديد الكل كمقروء</button>
+        </div>
+        <div class="notifications-list">
+            <!-- سيتم ملؤها بالجافاسكريبت -->
+        </div>
+    </div>
+    
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+        <!-- رأس الصفحة -->
+        <div class="page-header">
+            <h1>الإعدادات</h1>
+        </div>
+        
+        <!-- تبويبات الإعدادات -->
+        <div class="settings-tabs">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="openTab('profileTab')">
+                    <i class="fas fa-user"></i>
+                    الملف الشخصي
+                </button>
+                <button class="tab-btn" onclick="openTab('securityTab')">
+                    <i class="fas fa-lock"></i>
+                    الأمان
+                </button>
+                <!-- <button class="tab-btn" onclick="openTab('notificationsTab')">
+                    <i class="fas fa-bell"></i>
+                    الإشعارات
+                </button> -->
+                <!-- <button class="tab-btn" onclick="openTab('telegramTab')">
+                    <i class="fas fa-paper-plane"></i>
+                    تيليجرام
+                </button> -->
+                <!-- <button class="tab-btn" onclick="openTab('systemTab')">
+                    <i class="fas fa-cogs"></i>
+                    النظام
+                </button> -->
+            </div>
+            
+            <!-- المحتوى حسب التبويب -->
+            <div class="tabs-content">
+                <!-- تبويب الملف الشخصي -->
+                <div class="tab-content active" id="profileTab">
+                    <div class="settings-section">
+                        <h3>المعلومات الشخصية</h3>
+                        <form id="profileForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="profileName">الاسم الكامل</label>
+                                    <input type="text" id="profileName" value="المسؤول الرئيسي">
+                                </div>
+                                <!-- <div class="form-group">
+                                    <label for="profileEmail">البريد الإلكتروني</label>
+                                    <input type="email" id="profileEmail" value="admin@gym.com">
+                                </div> -->
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="profilePhone">رقم الهاتف</label>
+                                    <input type="tel" id="profilePhone" value="01012345678">
+                                </div>
+                                <div class="form-group">
+                                    <label for="profileRole">الدور</label>
+                                    <input type="text" id="profileRole" value="مسؤول" disabled>
+                                </div>
+                            </div>
+                            
+                            <div class="form-footer">
+                                <button type="button" class="btn btn-primary" onclick="saveProfile()">
+                                    حفظ التغييرات
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- تبويب الأمان -->
+                <div class="tab-content" id="securityTab">
+                    <div class="settings-section">
+                        <h3>تغيير كلمة المرور</h3>
+                        <form id="passwordForm">
+                            <div class="form-group">
+                                <label for="currentPassword">كلمة المرور الحالية</label>
+                                <input type="password" id="currentPassword" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="newPassword">كلمة المرور الجديدة</label>
+                                    <input type="password" id="newPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmPassword">تأكيد كلمة المرور الجديدة</label>
+                                    <input type="password" id="confirmPassword" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-footer">
+                                <button type="button" class="btn btn-primary" onclick="changePassword()">
+                                    تغيير كلمة المرور
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                 
+                </div>
+                
+                <!-- تبويب الإشعارات -->
+                <div class="tab-content" id="notificationsTab">
+                    <div class="settings-section">
+                        <h3>إعدادات الإشعارات</h3>
+                        <form id="notificationsForm">
+                            <div class="notification-settings">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>إشعارات البريد الإلكتروني</h4>
+                                        <p>تلقي إشعارات على البريد الإلكتروني</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="emailNotifications" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>إشعارات الأعضاء الجدد</h4>
+                                        <p>إشعار عند إضافة عضو جديد</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="newMemberNotifications" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>إشعارات تجديد الاشتراكات</h4>
+                                        <p>إشعار عند تجديد اشتراك عضو</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="renewalNotifications" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>إشعارات الاشتراكات المنتهية</h4>
+                                        <p>إشعار قبل انتهاء الاشتراكات</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="expiringNotifications" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>إشعارات الدفعات</h4>
+                                        <p>إشعار عند استلام دفعات جديدة</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="paymentNotifications" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-footer">
+                                <button type="button" class="btn btn-primary" onclick="saveNotificationSettings()">
+                                    حفظ الإعدادات
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- تبويب تيليجرام
+                <div class="tab-content" id="telegramTab">
+                    <div class="settings-section">
+                        <h3>إعدادات بوت تيليجرام</h3>
+                        <form id="telegramForm">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <h4>تفعيل بوت تيليجرام</h4>
+                                    <p>تفعيل إرسال الإشعارات إلى تيليجرام</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="telegramEnabled">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="botToken">توكن البوت</label>
+                                <input type="password" id="botToken" placeholder="أدخل توكن البوت">
+                                <small style="color: var(--text-light);">احصل على التوكن من @BotFather على تيليجرام</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="chatId">معرف الدردشة (Chat ID)</label>
+                                <input type="text" id="chatId" placeholder="أدخل معرف الدردشة">
+                                <small style="color: var(--text-light);">احصل على المعرف من @userinfobot على تيليجرام</small>
+                            </div>
+                            
+                            <div class="notification-settings" style="margin-top: 20px;">
+                                <h4>أنواع الإشعارات المرسلة</h4>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>أعضاء جدد</h4>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="telegramNewMembers" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>تجديد اشتراكات</h4>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="telegramRenewals" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>اشتراكات منتهية</h4>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="telegramExpired" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>دفعات جديدة</h4>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="telegramPayments" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-footer">
+                                <button type="button" class="btn btn-secondary" onclick="testTelegramBot()">
+                                    اختبار البوت
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="saveTelegramSettings()">
+                                    حفظ الإعدادات
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                 -->
+                <!-- تبويب النظام -->
+                <div class="tab-content" id="systemTab">
+                    <div class="settings-section">
+                        <h3>إعدادات النظام</h3>
+                        
+                        <div class="form-group">
+                            <label for="gymName">اسم الجيم</label>
+                            <input type="text" id="gymName" value="GYM PRO">
+                        </div>
+                        
+                        
+                       
+                        
+                        <div class="form-footer">
+                            <button type="button" class="btn btn-primary" onclick="saveSystemSettings()">
+                                حفظ الإعدادات
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section" style="margin-top: 30px;">
+                        <h3>صيانة النظام</h3>
+                        
+                        <div class="maintenance-actions">
+                            <button class="btn btn-secondary" onclick="exportData()">
+                                <i class="fas fa-download"></i>
+                                تصدير البيانات
+                            </button>
+                            
+                            <button class="btn btn-secondary" onclick="clearCache()">
+                                <i class="fas fa-trash"></i>
+                                مسح ذاكرة التخزين
+                            </button>
+                            
+                            <button class="btn btn-danger" onclick="resetSystem()">
+                                <i class="fas fa-redo"></i>
+                                إعادة تعيين النظام
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section" style="margin-top: 30px;">
+                        <h3>معلومات النظام</h3>
+                        
+                        <div class="system-info">
+                            <div class="info-item">
+                                <span class="info-label">إصدار النظام:</span>
+                                <span class="info-value">1.0.0</span>
+                            </div>
+                            
+                            <div class="info-item">
+                                <span class="info-label">عدد الأعضاء:</span>
+                                <span class="info-value" id="systemMemberCount">0</span>
+                            </div>
+                            
+                            <div class="info-item">
+                                <span class="info-label">عدد المستخدمين:</span>
+                                <span class="info-value" id="systemUserCount">0</span>
+                            </div>
+                            
+                            <div class="info-item">
+                                <span class="info-label">آخر نسخة احتياطية:</span>
+                                <span class="info-value">لم يتم بعد</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="js/user.js"></script>
+<script src="js/members.js"></script>
+<script src="js/login.js"></script>
+<!-- <script src="js/telegram.js"></script> -->
+    <script src="js/script.js"></script>
+    <script>
+        // تهيئة الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            // تحميل إعدادات تيليجرام
+            // loadTelegramSettings();
+            
+            // تحديث معلومات النظام
+            updateSystemInfo();
+        });
+        
+        // فتح تبويب
+        function openTab(tabId) {
+            // إخفاء جميع المحتويات
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // إزالة النشط من جميع الأزرار
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // إظهار المحتوى المطلوب
+            document.getElementById(tabId).classList.add('active');
+            
+            // إضافة النشط للزر المطلوب
+            event.currentTarget.classList.add('active');
+        }
+        
+        // تحميل إعدادات تيليجرام
+        function loadTelegramSettings() {
+            if (!telegramModule) return;
+            
+            const config = telegramModule.botConfig;
+            
+            document.getElementById('telegramEnabled').checked = config.enabled;
+            document.getElementById('botToken').value = config.botToken || '';
+            document.getElementById('chatId').value = config.chatId || '';
+            document.getElementById('telegramNewMembers').checked = config.notifications.newMembers;
+            document.getElementById('telegramRenewals').checked = config.notifications.renewals;
+            document.getElementById('telegramExpired').checked = config.notifications.expiring;
+            document.getElementById('telegramPayments').checked = config.notifications.payments;
+        }
+        
+        // حفظ الملف الشخصي
+        function saveProfile() {
+            const currentUser = usersModule.getCurrentUser();
+            if (!currentUser) return;
+            
+            const updatedUser = {
+                ...currentUser,
+                name: document.getElementById('profileName').value,
+                email: document.getElementById('profileEmail').value,
+                phone: document.getElementById('profilePhone').value
+            };
+            
+            const success = usersModule.updateUser(currentUser.id, updatedUser);
+            
+            if (success) {
+                GymManagement.showCustomAlert('تم الحفظ', 'تم تحديث الملف الشخصي بنجاح', 'success');
+            } else {
+                GymManagement.showCustomAlert('خطأ', 'حدث خطأ أثناء تحديث الملف الشخصي', 'error');
+            }
+        }
+        
+        // تغيير كلمة المرور
+        function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // التحقق من صحة البيانات
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                GymManagement.showCustomAlert('خطأ', 'يرجى ملء جميع الحقول', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                GymManagement.showCustomAlert('خطأ', 'كلمة المرور الجديدة غير متطابقة', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                GymManagement.showCustomAlert('خطأ', 'كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+                return;
+            }
+            
+            const currentUser = usersModule.getCurrentUser();
+            
+            // التحقق من كلمة المرور الحالية
+            if (currentUser.password !== currentPassword) {
+                GymManagement.showCustomAlert('خطأ', 'كلمة المرور الحالية غير صحيحة', 'error');
+                return;
+            }
+            
+            // تحديث كلمة المرور
+            currentUser.password = newPassword;
+            const success = usersModule.updateUser(currentUser.id, currentUser);
+            
+            if (success) {
+                GymManagement.showCustomAlert('تم التغيير', 'تم تغيير كلمة المرور بنجاح', 'success');
+                document.getElementById('passwordForm').reset();
+            } else {
+                GymManagement.showCustomAlert('خطأ', 'حدث خطأ أثناء تغيير كلمة المرور', 'error');
+            }
+        }
+        
+        // حفظ إعدادات الإشعارات
+        function saveNotificationSettings() {
+            const settings = {
+                email: document.getElementById('emailNotifications').checked,
+                newMembers: document.getElementById('newMemberNotifications').checked,
+                renewals: document.getElementById('renewalNotifications').checked,
+                expiring: document.getElementById('expiringNotifications').checked,
+                payments: document.getElementById('paymentNotifications').checked
+            };
+            
+            localStorage.setItem('notificationSettings', JSON.stringify(settings));
+            GymManagement.showCustomAlert('تم الحفظ', 'تم حفظ إعدادات الإشعارات بنجاح', 'success');
+        }
+        
+        // حفظ إعدادات تيليجرام
+        function saveTelegramSettings() {
+            if (!telegramModule) return;
+            
+            telegramModule.botConfig.enabled = document.getElementById('telegramEnabled').checked;
+            telegramModule.botConfig.botToken = document.getElementById('botToken').value;
+            telegramModule.botConfig.chatId = document.getElementById('chatId').value;
+            telegramModule.botConfig.notifications.newMembers = document.getElementById('telegramNewMembers').checked;
+            telegramModule.botConfig.notifications.renewals = document.getElementById('telegramRenewals').checked;
+            telegramModule.botConfig.notifications.expiring = document.getElementById('telegramExpired').checked;
+            telegramModule.botConfig.notifications.payments = document.getElementById('telegramPayments').checked;
+            
+            telegramModule.saveConfig();
+            GymManagement.showCustomAlert('تم الحفظ', 'تم حفظ إعدادات تيليجرام بنجاح', 'success');
+        }
+        
+        // اختبار بوت تيليجرام
+        function testTelegramBot() {
+            if (!telegramModule) return;
+            
+            const testMessage = '🔔 اختبار بوت تيليجرام\n' +
+                              'هذه رسالة اختبار من نظام إدارة الجيم\n' +
+                              'التاريخ: ' + new Date().toLocaleDateString('ar-EG') + '\n' +
+                              'الوقت: ' + new Date().toLocaleTimeString('ar-EG');
+            
+            const sent = telegramModule.sendMessage(testMessage);
+            
+            if (sent) {
+                GymManagement.showCustomAlert('تم الإرسال', 'تم إرسال رسالة الاختبار بنجاح', 'success');
+            } else {
+                GymManagement.showCustomAlert('خطأ', 'فشل إرسال رسالة الاختبار. تأكد من إعدادات البوت', 'error');
+            }
+        }
+        
+        // حفظ إعدادات النظام
+        function saveSystemSettings() {
+            const settings = {
+                gymName: document.getElementById('gymName').value,
+                currency: document.getElementById('currency').value,
+                timezone: document.getElementById('timezone').value,
+                dateFormat: document.getElementById('dateFormat').value
+            };
+            
+            localStorage.setItem('systemSettings', JSON.stringify(settings));
+            GymManagement.showCustomAlert('تم الحفظ', 'تم حفظ إعدادات النظام بنجاح', 'success');
+        }
+        
+        // تحديث معلومات النظام
+        function updateSystemInfo() {
+            const members = membersModule.getAllMembers();
+            const users = usersModule.getAllUsers();
+            
+            document.getElementById('systemMemberCount').textContent = members.length;
+            document.getElementById('systemUserCount').textContent = users.length;
+        }
+        
+        // تصدير البيانات
+        function exportData() {
+            const data = {
+                members: membersModule.getAllMembers(),
+                users: usersModule.getAllUsers(),
+                packages: membersModule.getAllPackages(),
+                activities: membersModule.getActivities(1000),
+                settings: {
+                    telegram: telegramModule.botConfig,
+                    notifications: JSON.parse(localStorage.getItem('notificationSettings') || '{}'),
+                    system: JSON.parse(localStorage.getItem('systemSettings') || '{}')
+                }
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const dataUrl = URL.createObjectURL(dataBlob);
+            
+            const downloadLink = document.createElement('a');
+            downloadLink.href = dataUrl;
+            downloadLink.download = `gym-backup-${new Date().toISOString().split('T')[0]}.json`;
+            downloadLink.click();
+            
+            GymManagement.showCustomAlert('تم التصدير', 'تم تصدير البيانات بنجاح', 'success');
+        }
+        
+        // مسح ذاكرة التخزين
+        function clearCache() {
+            GymManagement.showConfirmDialog(
+                'مسح ذاكرة التخزين',
+                'هل أنت متأكد من مسح ذاكرة التخزين المؤقتة؟',
+                () => {
+                    localStorage.removeItem('gymActivities');
+                    localStorage.removeItem('gymNotifications');
+                    GymManagement.showCustomAlert('تم المسح', 'تم مسح ذاكرة التخزين المؤقتة بنجاح', 'success');
+                }
+            );
+        }
+        
+        // إعادة تعيين النظام
+        function resetSystem() {
+            GymManagement.showConfirmDialog(
+                'إعادة تعيين النظام',
+                '⚠️ تحذير: هذه العملية ستؤدي إلى حذف جميع البيانات بما في ذلك الأعضاء والمستخدمين. هل أنت متأكد؟',
+                () => {
+                    // حذف جميع البيانات
+                    localStorage.clear();
+                    
+                    // إعادة التوجيه إلى صفحة الدخول
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                    
+                    GymManagement.showCustomAlert('تم التعيين', 'تم إعادة تعيين النظام بنجاح', 'success');
+                }
+            );
+        }
+    </script>
+    <style>
+        .settings-tabs {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .tabs-header {
+            display: flex;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--gray);
+            background-color: #f5f7fa;
+        }
+        
+        .tab-btn {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+        
+        .tab-btn i {
+            margin-left: 8px;
+        }
+        
+        .tab-btn:hover {
+            background-color: rgba(26, 115, 232, 0.1);
+        }
+        
+        .tab-btn.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: rgba(26, 115, 232, 0.05);
+        }
+        
+        .tabs-content {
+            padding: 30px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .settings-section {
+            margin-bottom: 30px;
+        }
+        
+        .settings-section h3 {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-info h4 {
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .setting-info p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray);
+            transition: var(--transition);
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+        
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+        }
+        
+        .session-device {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        
+        .session-device i {
+            margin-left: 10px;
+            color: var(--primary-color);
+        }
+        
+        .session-time {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+        
+        .btn-sm {
+            padding: 5px 15px;
+            font-size: 14px;
+        }
+        
+        .maintenance-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .maintenance-actions .btn {
+            display: flex;
+            align-items: center;
+        }
+        
+        .maintenance-actions .btn i {
+            margin-left: 8px;
+        }
+        
+        .maintenance-actions .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .maintenance-actions .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+        
+        .system-info {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: var(--border-radius);
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 500;
+        }
+        
+        .info-value {
+            color: var(--text-light);
+        }
+        
+        @media (max-width: 768px) {
+            .tabs-header {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .maintenance-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

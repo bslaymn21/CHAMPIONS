@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الاشتراكات - نظام إدارة الجيم</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- الشريط الجانبي -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-dumbbell"></i>
+                <h2>GYM<span>PRO</span></h2>
+            </div>
+            <button class="close-sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="members.html" class="menu-item">
+                <i class="fas fa-users"></i>
+                <span>إدارة الأعضاء</span>
+            </a>
+            <a href="calendar.html" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>التقويم والاشتراكات</span>
+            </a>
+            <a href="users.html" class="menu-item">
+                <i class="fas fa-user-cog"></i>
+                <span>المستخدمين</span>
+            </a>
+            <a href="packages.html" class="menu-item active">
+                <i class="fas fa-box"></i>
+                <span>الاشتراكات</span>
+            </a>
+            <a href="settings.html" class="menu-item">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </a>
+                 <a href="notifications.html" class="menu-item active">
+                <i class="fas fa-bell"></i>
+                <span>الإشعارات</span>
+            </a>
+             <a href="renew.html" class="menu-item active">
+                <i class="fas fa-sync-alt"></i>
+                <span>تجديد الاشتراكات</span>
+            </a>
+       <a href="deleted-members.html" class="menu-item active">
+                <i class="fas fa-trash-restore"></i>
+                <span>السجلات المحذوفة</span>
+            </a>
+        </div>
+        
+        <div class="user-profile">
+            <div class="user-avatar">م</div>
+            <div class="user-info">
+                <h4>المسؤول الرئيسي</h4>
+                <span>مسؤول</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="page-title">إدارة الاشتراكات</div>
+        
+        <div class="top-bar-actions">
+            <button class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+            
+            <div class="user-dropdown">
+                <button class="user-dropdown-btn">
+                    <i class="fas fa-user"></i>
+                    <span>المسؤول</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- لوحة الإشعارات -->
+    <div class="notifications-panel">
+        <div class="notifications-header">
+            <h3>الإشعارات</h3>
+            <button class="mark-all-read">تحديد الكل كمقروء</button>
+        </div>
+        <div class="notifications-list">
+            <!-- سيتم ملؤها بالجافاسكريبت -->
+        </div>
+    </div>
+    
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+        <!-- رأس الصفحة -->
+        <div class="page-header">
+            <h1>إدارة الاشتراكات</h1>
+            <div class="page-actions">
+                <button class="btn btn-primary" onclick="GymManagement.openModal('addPackageModal')">
+                    <i class="fas fa-plus"></i>
+                    <span>إضافة باقة جديدة</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- شبكة الباقات -->
+        <div class="packages-grid">
+            <!-- سيتم ملؤها بالجافاسكريبت -->
+            <div class="loading" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال إضافة باقة جديدة -->
+    <div class="modal-overlay" id="addPackageModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>إضافة باقة جديدة</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addPackageForm">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="packageName">اسم الباقة *</label>
+                            <input type="text" id="packageName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="packageStatus">الحالة</label>
+                            <select id="packageStatus">
+                                <option value="active">نشط</option>
+                                <option value="inactive">غير نشط</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="packagePrice">السعر (جنيه) *</label>
+                            <input type="number" id="packagePrice" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="packageDuration">المدة (يوم) *</label>
+                            <input type="number" id="packageDuration" required min="1">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="packageFeatures">المميزات *</label>
+                        <textarea id="packageFeatures" rows="4" required placeholder="أدخل المميزات مفصولة بفواصل"></textarea>
+                        <small style="color: var(--text-light);">مثال: وصول غير محدود, تدريب شخصي, ساونا</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="packageDescription">الوصف</label>
+                        <textarea id="packageDescription" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button type="button" class="btn btn-secondary" onclick="GymManagement.closeModal(document.getElementById('addPackageModal'))">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        حفظ الباقة
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- مودال تعديل الباقة -->
+    <div class="modal-overlay" id="editPackageModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>تعديل الباقة</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editPackageForm">
+                <input type="hidden" id="editPackageId">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editPackageName">اسم الباقة *</label>
+                            <input type="text" id="editPackageName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPackageStatus">الحالة</label>
+                            <select id="editPackageStatus">
+                                <option value="active">نشط</option>
+                                <option value="inactive">غير نشط</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editPackagePrice">السعر (جنيه) *</label>
+                            <input type="number" id="editPackagePrice" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="editPackageDuration">المدة (يوم) *</label>
+                            <input type="number" id="editPackageDuration" required min="1">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editPackageFeatures">المميزات *</label>
+                        <textarea id="editPackageFeatures" rows="4" required placeholder="أدخل المميزات مفصولة بفواصل"></textarea>
+                        <small style="color: var(--text-light);">مثال: وصول غير محدود, تدريب شخصي, ساونا</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editPackageDescription">الوصف</label>
+                        <textarea id="editPackageDescription" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button type="button" class="btn btn-secondary" onclick="GymManagement.closeModal(document.getElementById('editPackageModal'))">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        حفظ التعديلات
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script  type="module" src="js/user.js"></script>
+<script   type="module" src="js/members.js"></script>
+<script  type="module" src="js/login.js"></script>
+<!-- <script src="js/telegram.js"></script> -->
+    <script src="js/script.js"></script>
+    <script>
+        // تهيئة الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            // تحميل الباقات
+            loadPackages();
+            
+            // إعداد نموذج إضافة باقة
+            const addPackageForm = document.getElementById('addPackageForm');
+            if (addPackageForm) {
+                addPackageForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleAddPackage();
+                });
+            }
+            
+            // إعداد نموذج تعديل باقة
+            const editPackageForm = document.getElementById('editPackageForm');
+            if (editPackageForm) {
+                editPackageForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleEditPackage();
+                });
+            }
+        });
+        
+        // تحميل الباقات
+        function loadPackages() {
+            const packagesGrid = document.querySelector('.packages-grid');
+            if (!packagesGrid) return;
+            
+            const packages = membersModule.getAllPackages();
+            
+            if (packages.length === 0) {
+                packagesGrid.innerHTML = `
+                    <div class="no-packages" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                        <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray); margin-bottom: 20px;"></i>
+                        <h3>لا توجد باقات</h3>
+                        <p>لم يتم إضافة أي باقات بعد</p>
+                        <button class="btn btn-primary" onclick="GymManagement.openModal('addPackageModal')" style="margin-top: 20px;">
+                            <i class="fas fa-plus"></i>
+                            إضافة أول باقة
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let packagesHTML = '';
+            packages.forEach(pkg => {
+                packagesHTML += `
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-name">${pkg.name}</div>
+                            <div class="package-price">${pkg.price} ج.م</div>
+                        </div>
+                        <div class="package-duration">مدة ${pkg.duration} يوم</div>
+                        
+                        <div class="package-features">
+                            ${pkg.features.map(feature => `
+                                <div class="package-feature">
+                                    <i class="fas fa-check"></i>
+                                    <span>${feature}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="package-footer">
+                            <div class="package-actions">
+                                <button class="action-btn edit" onclick="editPackage(${pkg.id})">
+                                    <i class="fas fa-edit"></i>
+                                    <span>تعديل</span>
+                                </button>
+                                <button class="action-btn delete" onclick="deletePackage(${pkg.id})">
+                                    <i class="fas fa-trash"></i>
+                                    <span>حذف</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            packagesGrid.innerHTML = packagesHTML;
+        }
+        
+        // معالجة إضافة باقة جديدة
+        function handleAddPackage() {
+            const packageData = {
+                name: document.getElementById('packageName').value,
+                price: document.getElementById('packagePrice').value,
+                duration: document.getElementById('packageDuration').value,
+                features: document.getElementById('packageFeatures').value,
+                description: document.getElementById('packageDescription').value
+            };
+            
+            // التحقق من صحة البيانات
+            if (!packageData.name || !packageData.price || !packageData.duration || !packageData.features) {
+                GymManagement.showCustomAlert('خطأ', 'يرجى ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+            
+            // إضافة الباقة
+            const newPackage = membersModule.addPackage(packageData);
+            
+            if (newPackage) {
+                GymManagement.closeModal(document.getElementById('addPackageModal'));
+                GymManagement.showCustomAlert('تمت الإضافة', 'تم إضافة الباقة بنجاح', 'success');
+                
+                // تحديث قائمة الباقات
+                loadPackages();
+                
+                // إعادة تعيين النموذج
+                document.getElementById('addPackageForm').reset();
+            } else {
+                GymManagement.showCustomAlert('خطأ', 'حدث خطأ أثناء إضافة الباقة', 'error');
+            }
+        }
+        
+        // تعديل الباقة
+        window.editPackage = function(packageId) {
+            const packages = membersModule.getAllPackages();
+            const pkg = packages.find(p => p.id === packageId);
+            
+            if (!pkg) {
+                GymManagement.showCustomAlert('خطأ', 'الباقة غير موجودة', 'error');
+                return;
+            }
+            
+            // تعبئة البيانات في النموذج
+            document.getElementById('editPackageId').value = pkg.id;
+            document.getElementById('editPackageName').value = pkg.name;
+            document.getElementById('editPackagePrice').value = pkg.price;
+            document.getElementById('editPackageDuration').value = pkg.duration;
+            document.getElementById('editPackageFeatures').value = pkg.features.join(', ');
+            document.getElementById('editPackageDescription').value = pkg.description || '';
+            document.getElementById('editPackageStatus').value = pkg.status || 'active';
+            
+            // فتح مودال التعديل
+            GymManagement.openModal('editPackageModal');
+        };
+        
+        // معالجة تعديل الباقة
+        function handleEditPackage() {
+            const packageId = document.getElementById('editPackageId').value;
+            const packageData = {
+                name: document.getElementById('editPackageName').value,
+                price: document.getElementById('editPackagePrice').value,
+                duration: document.getElementById('editPackageDuration').value,
+                features: document.getElementById('editPackageFeatures').value,
+                description: document.getElementById('editPackageDescription').value
+            };
+            
+            // التحقق من صحة البيانات
+            if (!packageData.name || !packageData.price || !packageData.duration || !packageData.features) {
+                GymManagement.showCustomAlert('خطأ', 'يرجى ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+            
+            // تحديث الباقة
+            const success = membersModule.updatePackage(packageId, packageData);
+            
+            if (success) {
+                GymManagement.closeModal(document.getElementById('editPackageModal'));
+                GymManagement.showCustomAlert('تم التحديث', 'تم تحديث الباقة بنجاح', 'success');
+                
+                // تحديث قائمة الباقات
+                loadPackages();
+            } else {
+                GymManagement.showCustomAlert('خطأ', 'حدث خطأ أثناء تحديث الباقة', 'error');
+            }
+        }
+        
+        // حذف الباقة
+        window.deletePackage = function(packageId) {
+            // التحقق إذا كانت الباقة مستخدمة من قبل أعضاء
+            const members = membersModule.getAllMembers();
+            const packageInUse = members.some(member => member.packageId === packageId);
+            
+            if (packageInUse) {
+                GymManagement.showCustomAlert('خطأ', 'لا يمكن حذف هذه الباقة لأنها مستخدمة من قبل أعضاء', 'error');
+                return;
+            }
+            
+            GymManagement.showConfirmDialog(
+                'حذف الباقة',
+                'هل أنت متأكد من حذف هذه الباقة؟',
+                () => {
+                    const success = membersModule.deletePackage(packageId);
+                    if (success) {
+                        GymManagement.showCustomAlert('تم الحذف', 'تم حذف الباقة بنجاح', 'success');
+                        loadPackages();
+                    } else {
+                        GymManagement.showCustomAlert('خطأ', 'حدث خطأ أثناء حذف الباقة', 'error');
+                    }
+                }
+            );
+        };
+    </script>
+    <style>
+        .package-footer {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray);
+        }
+        
+        .package-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .package-actions .action-btn {
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        
+        .package-actions .action-btn.edit {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+        
+        .package-actions .action-btn.delete {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--danger);
+        }
+        
+        .package-actions .action-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .package-actions .action-btn i {
+            margin-left: 8px;
+        }
+    </style>
+</body>
+</html>

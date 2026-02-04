@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإشعارات - نظام إدارة الجيم</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<style>
+        .filters-container {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 20px;
+            background-color: #f5f5f5;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        
+        .filter-btn:hover {
+            background-color: var(--gray);
+        }
+        
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .filter-by-type select {
+            padding: 8px 15px;
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            min-width: 150px;
+        }
+        
+        .notifications-container {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .notifications-list-full {
+            min-height: 400px;
+        }
+        
+        .notification-item-full {
+            display: flex;
+            padding: 20px;
+            border-bottom: 1px solid var(--gray);
+            transition: var(--transition);
+        }
+        
+        .notification-item-full:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-item-full:hover {
+            background-color: rgba(26, 115, 232, 0.05);
+        }
+        
+        .notification-item-full.unread {
+            background-color: rgba(26, 115, 232, 0.08);
+        }
+        
+        .notification-icon-full {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 15px;
+            font-size: 20px;
+            background-color: rgba(26, 115, 232, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .notification-content-full {
+            flex: 1;
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .notification-title-full {
+            font-weight: 600;
+            font-size: 16px;
+            margin: 0;
+        }
+        
+        .notification-time-full {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .notification-message-full {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .notification-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .notification-actions .action-btn {
+            padding: 6px 15px;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification-actions .mark-read {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+        
+        .notification-actions .mark-read:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .notification-actions .delete-notification {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--danger);
+        }
+        
+        .notification-actions .action-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+        
+        .notification-actions .action-btn i {
+            margin-left: 6px;
+        }
+        
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .pagination-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--gray);
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .page-info {
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .filters-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .notification-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .notification-time-full {
+                margin-top: 5px;
+            }
+        }
+    </style>
+<body>
+    <!-- الشريط الجانبي -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-dumbbell"></i>
+                <h2>GYM<span>PRO</span></h2>
+            </div>
+            <button class="close-sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="members.html" class="menu-item">
+                <i class="fas fa-users"></i>
+                <span>إدارة الأعضاء</span>
+            </a>
+            <a href="calendar.html" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>التقويم والاشتراكات</span>
+            </a>
+            <a href="users.html" class="menu-item">
+                <i class="fas fa-user-cog"></i>
+                <span>المستخدمين</span>
+            </a>
+            <a href="packages.html" class="menu-item">
+                <i class="fas fa-box"></i>
+                <span>الاشتراكات</span>
+            </a>
+            <a href="settings.html" class="menu-item">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </a>
+            <a href="notifications.html" class="menu-item active">
+                <i class="fas fa-bell"></i>
+                <span>الإشعارات</span>
+            </a>
+             <a href="renew.html" class="menu-item active">
+                <i class="fas fa-sync-alt"></i>
+                <span>تجديد الاشتراكات</span>
+            </a>
+            <a href="deleted-members.html" class="menu-item active">
+                <i class="fas fa-trash-restore"></i>
+                <span>السجلات المحذوفة</span>
+            </a>
+       
+        </div>
+        
+        <div class="user-profile">
+            <div class="user-avatar">م</div>
+            <div class="user-info">
+                <h4>المسؤول الرئيسي</h4>
+                <span>مسؤول</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="page-title">الإشعارات</div>
+        
+        <div class="top-bar-actions">
+            <button class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+            
+            <div class="user-dropdown">
+                <button class="user-dropdown-btn">
+                    <i class="fas fa-user"></i>
+                    <span>المسؤول</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+        <!-- رأس الصفحة -->
+        <div class="page-header">
+            <h1>جميع الإشعارات</h1>
+            <div class="page-actions">
+                <button class="btn btn-secondary" onclick="markAllAsRead()">
+                    <i class="fas fa-check-double"></i>
+                    <span>تحديد الكل كمقروء</span>
+                </button>
+                <button class="btn btn-danger" onclick="clearAllNotifications()">
+                    <i class="fas fa-trash"></i>
+                    <span>حذف الكل</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- تصفية الإشعارات -->
+        <div class="filters-container" style="margin-bottom: 20px;">
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterNotifications('all')">الكل</button>
+                <button class="filter-btn" onclick="filterNotifications('unread')">غير المقروءة</button>
+                <button class="filter-btn" onclick="filterNotifications('today')">اليوم</button>
+                <button class="filter-btn" onclick="filterNotifications('week')">هذا الأسبوع</button>
+                <button class="filter-btn" onclick="filterNotifications('month')">هذا الشهر</button>
+            </div>
+            
+            <div class="filter-by-type">
+                <select id="typeFilter" onchange="filterByType(this.value)">
+                    <option value="">جميع الأنواع</option>
+                    <option value="new_member">أعضاء جدد</option>
+                    <option value="renewal">تجديد اشتراكات</option>
+                    <option value="payment">دفعات</option>
+                    <option value="expiring">اشتراكات منتهية</option>
+                    <option value="telegram">تيليجرام</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- قائمة الإشعارات -->
+        <div class="notifications-container">
+            <div class="notifications-list-full">
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+                <div class="loading" style="text-align: center; padding: 40px;">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+            
+            <!-- ترقيم الصفحات -->
+            <div class="pagination-container" style="margin-top: 30px;">
+                <div class="pagination">
+                    <button class="pagination-btn" id="prevPage" disabled>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <span class="page-info" id="pageInfo">الصفحة 1 من 1</span>
+                    <button class="pagination-btn" id="nextPage">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="js/user.js"></script>
+<script  type="module" src="js/members.js"></script>
+<script src="js/login.js"></script>
+<!-- <script src="js/telegram.js"></script> -->
+    <script src="js/script.js"></script>
+    <script>
+        // تهيئة الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNotifications();
+        });
+        
+        // متغيرات التصفية والترقيم
+        let currentFilter = 'all';
+        let currentType = '';
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        
+        // تحميل الإشعارات
+        function loadNotifications() {
+            const notificationsList = document.querySelector('.notifications-list-full');
+            if (!notificationsList) return;
+            
+            let notifications = membersModule.getNotifications();
+            
+            // تطبيق الفلاتر
+            notifications = applyFilters(notifications);
+            
+            // حساب عدد الصفحات
+            const totalPages = Math.ceil(notifications.length / itemsPerPage);
+            
+            // تحديد الإشعارات للصفحة الحالية
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageNotifications = notifications.slice(startIndex, endIndex);
+            
+            if (pageNotifications.length === 0) {
+                notificationsList.innerHTML = `
+                    <div class="no-notifications" style="text-align: center; padding: 40px;">
+                        <i class="fas fa-bell-slash" style="font-size: 48px; color: var(--gray); margin-bottom: 20px;"></i>
+                        <h3>لا توجد إشعارات</h3>
+                        <p>لم يتم العثور على إشعارات تطابق معايير البحث</p>
+                    </div>
+                `;
+                updatePaginationControls(totalPages);
+                return;
+            }
+            
+            let notificationsHTML = '';
+            pageNotifications.forEach(notification => {
+                const icon = getNotificationIcon(notification.type);
+                const timeAgo = getTimeAgo(notification.timestamp);
+                const unreadClass = notification.read ? '' : 'unread';
+                
+                notificationsHTML += `
+                    <div class="notification-item-full ${unreadClass}" data-id="${notification.id}">
+                        <div class="notification-icon-full">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div class="notification-content-full">
+                            <div class="notification-header">
+                                <h4 class="notification-title-full">${notification.title}</h4>
+                                <span class="notification-time-full">${timeAgo}</span>
+                            </div>
+                            <p class="notification-message-full">${notification.message}</p>
+                            <div class="notification-actions">
+                                <button class="action-btn mark-read" onclick="markAsRead(${notification.id})" ${notification.read ? 'disabled' : ''}>
+                                    <i class="fas fa-check"></i>
+                                    <span>تحديد كمقروء</span>
+                                </button>
+                                <button class="action-btn delete-notification" onclick="deleteNotification(${notification.id})">
+                                    <i class="fas fa-trash"></i>
+                                    <span>حذف</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            notificationsList.innerHTML = notificationsHTML;
+            updatePaginationControls(totalPages);
+        }
+        
+        // تطبيق الفلاتر
+        function applyFilters(notifications) {
+            let filtered = notifications;
+            
+            // فلترة حسب الحالة
+            if (currentFilter === 'unread') {
+                filtered = filtered.filter(n => !n.read);
+            } else if (currentFilter === 'today') {
+                const today = new Date().toISOString().split('T')[0];
+                filtered = filtered.filter(n => {
+                    const notificationDate = new Date(n.timestamp).toISOString().split('T')[0];
+                    return notificationDate === today;
+                });
+            } else if (currentFilter === 'week') {
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                filtered = filtered.filter(n => new Date(n.timestamp) >= weekAgo);
+            } else if (currentFilter === 'month') {
+                const monthAgo = new Date();
+                monthAgo.setMonth(monthAgo.getMonth() - 1);
+                filtered = filtered.filter(n => new Date(n.timestamp) >= monthAgo);
+            }
+            
+            // فلترة حسب النوع
+            if (currentType) {
+                filtered = filtered.filter(n => n.type === currentType);
+            }
+            
+            return filtered;
+        }
+        
+        // تحديث عناصر التحكم في الترقيم
+        function updatePaginationControls(totalPages) {
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === totalPages;
+            document.getElementById('pageInfo').textContent = `الصفحة ${currentPage} من ${totalPages}`;
+        }
+        
+        // الحصول على أيقونة الإشعار
+        function getNotificationIcon(type) {
+            return GymManagement.getNotificationIcon(type);
+        }
+        
+        // حساب الوقت المنقضي
+        function getTimeAgo(timestamp) {
+            return GymManagement.getTimeAgo(timestamp);
+        }
+        
+        // تصفية الإشعارات
+        function filterNotifications(filter) {
+            currentFilter = filter;
+            currentPage = 1;
+            
+            // تحديث أزرار التصفية النشطة
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            loadNotifications();
+        }
+        
+        // تصفية حسب النوع
+        function filterByType(type) {
+            currentType = type;
+            currentPage = 1;
+            loadNotifications();
+        }
+        
+        // تحديد كمقروء
+        function markAsRead(notificationId) {
+            membersModule.markNotificationAsRead(notificationId);
+            loadNotifications();
+            GymManagement.updateNotificationBadge();
+        }
+        
+        // تحديد الكل كمقروء
+        function markAllAsRead() {
+            membersModule.markAllNotificationsAsRead();
+            loadNotifications();
+            GymManagement.updateNotificationBadge();
+        }
+        
+        // حذف إشعار
+        function deleteNotification(notificationId) {
+            const notifications = membersModule.getNotifications();
+            const filteredNotifications = notifications.filter(n => n.id !== notificationId);
+            localStorage.setItem('gymNotifications', JSON.stringify(filteredNotifications));
+            loadNotifications();
+            GymManagement.updateNotificationBadge();
+        }
+        
+        // حذف جميع الإشعارات
+        function clearAllNotifications() {
+            GymManagement.showConfirmDialog(
+                'حذف جميع الإشعارات',
+                'هل أنت متأكد من حذف جميع الإشعارات؟',
+                () => {
+                    localStorage.removeItem('gymNotifications');
+                    loadNotifications();
+                    GymManagement.updateNotificationBadge();
+                    GymManagement.showCustomAlert('تم الحذف', 'تم حذف جميع الإشعارات بنجاح', 'success');
+                }
+            );
+        }
+        
+        // التنقل بين الصفحات
+        document.getElementById('prevPage').addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                loadNotifications();
+            }
+        });
+        
+        document.getElementById('nextPage').addEventListener('click', function() {
+            const notifications = membersModule.getNotifications();
+            const filteredNotifications = applyFilters(notifications);
+            const totalPages = Math.ceil(filteredNotifications.length / itemsPerPage);
+            
+            if (currentPage < totalPages) {
+                currentPage++;
+                loadNotifications();
+            }
+        });
+    </script>
+</body>
+</html>

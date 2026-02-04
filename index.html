@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة الجيم - تسجيل الدخول</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <i class="fas fa-dumbbell"></i>
+                <h1>GYM<span>PRO</span></h1>
+            </div>
+            <p>نظام إدارة الجيم والاشتراكات</p>
+        </div>
+        
+        <div class="login-box">
+            <h2>تسجيل الدخول</h2>
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="username"><i class="fas fa-user"></i> اسم المستخدم</label>
+                    <input type="text" id="username" placeholder="أدخل اسم المستخدم" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password"><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> دخول
+                </button>
+                
+                <div class="login-error" id="loginError"></div>
+            </form>
+            
+            
+        </div>
+    </div>
+
+    <script src="js/login.js"></script>
+    <!-- <script src="js/telegram.js"></script> -->
+    <script src="js/script.js"></script>
+</body>
+</html>

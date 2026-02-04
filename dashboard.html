@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - نظام إدارة الجيم</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* إضافة أنماط للنافذة المنبثقة */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            animation: modalAppear 0.3s ease-out;
+        }
+        
+        @keyframes modalAppear {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .new-members-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .new-members-table th {
+            background-color: #f2f2f2;
+            padding: 15px;
+            text-align: right;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .new-members-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+        
+        .new-members-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .member-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background-color: #e7f7ef;
+            color: #0ca678;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #e6a700;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            text-align: left;
+            background-color: #f8f9fa;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .total-count {
+            font-weight: bold;
+            color: #4a6baf;
+        }
+        
+        /* تحسين بطاقة الإحصائيات الجديدة */
+        .stat-card[data-stat="new-this-month"] .stat-icon.new-members {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .stat-card[data-stat="new-this-month"]:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- الشريط الجانبي -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-dumbbell"></i>
+                <h2>GYM<span>PRO</span></h2>
+            </div>
+            <button class="close-sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item active">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="members.html" class="menu-item">
+                <i class="fas fa-users"></i>
+                <span>إدارة الأعضاء</span>
+            </a>
+            <a href="calendar.html" class="menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>التقويم والاشتراكات</span>
+            </a>
+            <a href="users.html" class="menu-item">
+                <i class="fas fa-user-cog"></i>
+                <span>المستخدمين</span>
+            </a>
+            <a href="packages.html" class="menu-item">
+                <i class="fas fa-box"></i>
+                <span>الاشتراكات</span>
+            </a>
+            <a href="settings.html" class="menu-item">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </a>
+            <a href="notifications.html" class="menu-item active">
+                <i class="fas fa-bell"></i>
+                <span>الإشعارات</span>
+            </a>
+            <a href="renew.html" class="menu-item active">
+                <i class="fas fa-sync-alt"></i>
+                <span>تجديد الاشتراكات</span>
+            </a>
+            <a href="deleted-members.html" class="menu-item active">
+                <i class="fas fa-trash-restore"></i>
+                <span>السجلات المحذوفة</span>
+            </a>
+        </div>
+        
+        <div class="user-profile">
+            <div class="user-avatar">م</div>
+            <div class="user-info">
+                <h4>المسؤول الرئيسي</h4>
+                <span>مسؤول</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="page-title">لوحة التحكم</div>
+        
+        <div class="top-bar-actions">
+            <button class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+            
+            <div class="user-dropdown">
+                <button class="user-dropdown-btn">
+                    <i class="fas fa-user"></i>
+                    <span>المسؤول</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <button class="logout-btn" onclick="logoutUser()" title="تسجيل الخروج">
+        <i class="fas fa-sign-out-alt"></i>
+        <span class="logout-text">خروج</span>
+    </button>
+
+        </div>
+    </div>
+    
+    <!-- لوحة الإشعارات -->
+    <div class="notifications-panel">
+        <div class="notifications-header">
+            <h3>الإشعارات</h3>
+            <button class="mark-all-read">تحديد الكل كمقروء</button>
+        </div>
+        <div class="notifications-list">
+            <!-- سيتم ملؤها بالجافاسكريبت -->
+        </div>
+    </div>
+    
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+        <!-- بطاقات الإحصائيات -->
+        <div class="stats-cards">
+            <div class="stat-card" data-stat="total">
+                <div class="stat-icon members">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>إجمالي المشتركين</h3>
+                <div class="stat-value">0</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+5 هذا الشهر</span>
+                </div>
+            </div>
+            
+            <!-- بطاقة الإضافات هذا الشهر الجديدة -->
+            <div class="stat-card" data-stat="new-this-month" id="new-this-month-card">
+                <div class="stat-icon new-members">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h3>الإضافات هذا الشهر</h3>
+                <div class="stat-value">0</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-chart-line"></i>
+                    <span>إجمالي الإضافات الجديدة</span>
+                </div>
+            </div>
+            
+            <div class="stat-card" data-stat="male">
+                <div class="stat-icon male">
+                    <i class="fas fa-male"></i>
+                </div>
+                <h3>المشتركين الرجال</h3>
+                <div class="stat-value">0</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+3 هذا الشهر</span>
+                </div>
+            </div>
+            
+            <div class="stat-card" data-stat="female">
+                <div class="stat-icon female">
+                    <i class="fas fa-female"></i>
+                </div>
+                <h3>المشتركين النساء</h3>
+                <div class="stat-value">0</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+2 هذا الشهر</span>
+                </div>
+            </div>
+            
+            <div class="stat-card" data-stat="revenue">
+                <div class="stat-icon revenue">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <h3>إيرادات الشهر</h3>
+                <div class="stat-value">0 ج.م</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+15% عن الشهر الماضي</span>
+                </div>
+            </div>
+            
+            <div class="stat-card" data-stat="expiring">
+                <div class="stat-icon expiring">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>على وشك الانتهاء</h3>
+                <div class="stat-value">0</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>يتطلب متابعة</span>
+                </div>
+            </div>
+            
+            <div class="stat-card" data-stat="expired">
+                <div class="stat-icon expired">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>المنتهية</h3>
+                <div class="stat-value">0</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>يتطلب تجديد</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- النشاط الأخير -->
+      
+            <div class="activity-list">
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- نافذة منبثقة لعرض الأعضاء المضافين هذا الشهر -->
+    <div class="modal-overlay" id="newMembersModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>الأعضاء المضافين هذا الشهر</h3>
+                <button class="close-modal" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="newMembersContent">
+                    <!-- سيتم ملؤها بالبيانات -->
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>جاري تحميل البيانات...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <p>إجمالي الأعضاء المضافين هذا الشهر: <span class="total-count" id="totalNewMembers">0</span> عضو</p>
+            </div>
+        </div>
+    </div>
+
+ 
+    
+<!-- مودال تأكيد الخروج -->
+<div class="modal-overlay" id="logoutConfirmModal" style="display: none;">
+    <div class="modal" style="max-width: 400px;">
+        <div class="modal-header">
+            <h3><i class="fas fa-sign-out-alt" style="color: #ff4444; margin-left: 10px;"></i> تأكيد تسجيل الخروج</h3>
+            <button class="close-modal" onclick="closeLogoutModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, rgba(255, 68, 68, 0.1), rgba(255, 0, 0, 0.05)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fas fa-sign-out-alt" style="font-size: 36px; color: #ff4444;"></i>
+                </div>
+                <h4 style="margin: 0 0 10px; color: var(--text-color);">هل أنت متأكد من تسجيل الخروج؟</h4>
+                <p style="color: var(--text-light); margin: 0; line-height: 1.6;">سيتم إغلاق الجلسة الحالية والعودة لصفحة الدخول</p>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 25px;">
+                <button class="btn btn-secondary" onclick="closeLogoutModal()" style="flex: 1;">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button class="btn btn-danger" onclick="confirmLogout()" style="flex: 1;">
+                    <i class="fas fa-sign-out-alt"></i> نعم، سجل الخروج
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- مودال تسجيل الخروج -->
+<div class="modal-overlay" id="logoutModal" style="display: none;">
+    <div class="modal" style="max-width: 350px;">
+        <div class="modal-body">
+            <div style="text-align: center; padding: 30px 20px;">
+                <div class="spinner" style="width: 60px; height: 60px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                <h4 style="margin: 0 0 10px; color: var(--text-color);">جاري تسجيل الخروج</h4>
+                <p style="color: var(--text-light); margin: 0;">يرجى الانتظار...</p>
+            </div>
+        </div>
+    </div>
+</div>
+   <script type="module" src="js/user.js"></script>
+    <script type="module" src="js/members.js"></script>
+    <script  type="module" src="js/login.js"></script>
+    <!-- <script src="js/telegram.js"></script> -->
+    <script src="js/script.js"></script>
+    <script>
+        
+    document.addEventListener('DOMContentLoaded', function() {
+        // تهيئة النظام
+        if (typeof GymManagement !== 'undefined') {
+            GymManagement.init();
+        }
+        
+        // إعداد أحداث البطاقات
+        setupCardEvents();
+        
+        // تحديث الإحصائيات عند تحميل الصفحة
+        setTimeout(updateDashboardStats, 500);
+    });
+    
+    // إعداد أحداث البطاقات
+    function setupCardEvents() {
+        // إضافة حدث النقر على بطاقة الإضافات هذا الشهر
+        const newThisMonthCard = document.querySelector('[data-stat="new-this-month"]');
+        const newMembersModal = document.getElementById('newMembersModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        
+        if (newThisMonthCard) {
+            newThisMonthCard.addEventListener('click', function() {
+                openNewMembersModal();
+            });
+        }
+        
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', function() {
+                closeNewMembersModal();
+            });
+        }
+        
+        // إغلاق النافذة عند النقر خارجها
+        if (newMembersModal) {
+            newMembersModal.addEventListener('click', function(e) {
+                if (e.target === newMembersModal) {
+                    closeNewMembersModal();
+                }
+            });
+        }
+    }
+    
+    // دالة لفتح نافذة الأعضاء الجدد
+    function openNewMembersModal() {
+        const newMembersModal = document.getElementById('newMembersModal');
+        if (newMembersModal) {
+            newMembersModal.style.display = 'flex';
+            renderNewMembersTable();
+        }
+    }
+    
+    // دالة لإغلاق النافذة
+    function closeNewMembersModal() {
+        const newMembersModal = document.getElementById('newMembersModal');
+        if (newMembersModal) {
+            newMembersModal.style.display = 'none';
+        }
+    }
+    
+    // دالة لتقديم جدول الأعضاء الجدد
+    function renderNewMembersTable() {
+        const newMembersContent = document.getElementById('newMembersContent');
+        const totalCountElement = document.getElementById('totalNewMembers');
+        
+        if (typeof membersModule === 'undefined') {
+            newMembersContent.innerHTML = `
+                <div class="no-data">
+                    <i class="fas fa-exclamation-circle" style="font-size: 48px; margin-bottom: 20px; color: var(--warning);"></i>
+                    <h3>النظام غير جاهز</h3>
+                    <p>لا يمكن تحميل بيانات الأعضاء حالياً.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        try {
+            // الحصول على الأعضاء الجدد لهذا الشهر من membersModule
+            const newMembers = getNewMembersThisMonth();
+            
+            if (newMembers.length === 0) {
+                newMembersContent.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-user-slash" style="font-size: 48px; margin-bottom: 20px;"></i>
+                        <h3>لا توجد إضافات جديدة هذا الشهر</h3>
+                        <p>لم يتم إضافة أي أعضاء جدد خلال الشهر الحالي.</p>
+                    </div>
+                `;
+                if (totalCountElement) {
+                    totalCountElement.textContent = '0';
+                }
+                return;
+            }
+            
+            let tableHTML = `
+                <div class="table-responsive">
+                    <table class="new-members-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم العضو</th>
+                                <th>تاريخ الانضمام</th>
+                                <th>نوع الاشتراك</th>
+                                <th>رقم الهاتف</th>
+                                <th>الحالة</th>
+                                <th>المبلغ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            newMembers.forEach((member, index) => {
+                const statusClass = member.status === 'active' ? 'status-active' : 
+                                  member.status === 'expiring' ? 'status-pending' : 
+                                  'status-pending';
+                const statusText = member.status === 'active' ? 'نشط' : 
+                                 member.status === 'expiring' ? 'ينتهي قريباً' : 
+                                 'منتهي';
+                
+                // تنسيق التاريخ
+                const joinDate = new Date(member.addedDate || member.startDate);
+                const formattedDate = joinDate.toLocaleDateString('ar-EG', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                tableHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${member.fullName || member.name || 'غير معروف'}</strong></td>
+                        <td>${formattedDate}</td>
+                        <td>${member.packageName || 'غير محدد'}</td>
+                        <td>${member.phone || 'لا يوجد'}</td>
+                        <td><span class="member-status ${statusClass}">${statusText}</span></td>
+                        <td>${member.packagePrice || 0} ج.م</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            newMembersContent.innerHTML = tableHTML;
+            
+            if (totalCountElement) {
+                totalCountElement.textContent = newMembers.length;
+            }
+            
+        } catch (error) {
+            console.error('خطأ في تحميل بيانات الأعضاء الجدد:', error);
+            newMembersContent.innerHTML = `
+                <div class="no-data">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px; color: var(--danger);"></i>
+                    <h3>حدث خطأ</h3>
+                    <p>فشل في تحميل بيانات الأعضاء الجدد.</p>
+                </div>
+            `;
+        }
+    }
+    
+    // دالة للحصول على الأعضاء الجدد لهذا الشهر
+    function getNewMembersThisMonth() {
+        if (typeof membersModule === 'undefined') {
+            return [];
+        }
+        
+        try {
+            const allMembers = membersModule.getAllMembers();
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            
+            // تصفية الأعضاء المضافين هذا الشهر
+            const newMembers = allMembers.filter(member => {
+                if (member.addedDate || member.startDate) {
+                    const joinDate = new Date(member.addedDate || member.startDate);
+                    return joinDate.getMonth() === currentMonth && 
+                           joinDate.getFullYear() === currentYear;
+                }
+                return false;
+            });
+            
+            return newMembers;
+            
+        } catch (error) {
+            console.error('خطأ في جلب الأعضاء الجدد:', error);
+            return [];
+        }
+    }
+    
+    // دالة لتحديث إحصائيات لوحة التحكم
+    function updateDashboardStats() {
+        if (typeof membersModule === 'undefined') {
+            console.error('membersModule غير متوفر');
+            return;
+        }
+        
+        try {
+            const stats = membersModule.calculateStats();
+            
+            // تحديث كل بطاقة
+            document.querySelectorAll('.stat-card').forEach(card => {
+                const statType = card.getAttribute('data-stat');
+                const valueElement = card.querySelector('.stat-value');
+                
+                if (valueElement) {
+                    switch(statType) {
+                        case 'total':
+                            valueElement.textContent = stats.totalMembers || 0;
+                            break;
+                        case 'male':
+                            valueElement.textContent = stats.maleMembers || 0;
+                            break;
+                        case 'female':
+                            valueElement.textContent = stats.femaleMembers || 0;
+                            break;
+                        case 'revenue':
+                            valueElement.textContent = (stats.monthlyRevenue || 0).toLocaleString() + ' ج.م';
+                            break;
+                        case 'expiring':
+                            valueElement.textContent = stats.expiringMembers || 0;
+                            break;
+                        case 'expired':
+                            valueElement.textContent = stats.expiredMembers || 0;
+                            break;
+                        case 'new-this-month':
+                            // حساب الأعضاء الجدد هذا الشهر
+                            const newMembers = getNewMembersThisMonth();
+                            valueElement.textContent = newMembers.length || 0;
+                            break;
+                    }
+                }
+            });
+            
+            // تحديث الإشعارات
+            updateNotificationBadge();
+            
+        } catch (error) {
+            console.error('خطأ في تحديث الإحصائيات:', error);
+        }
+    }
+    
+    // دالة لتحديث شارة الإشعارات
+    function updateNotificationBadge() {
+        const badge = document.querySelector('.notification-badge');
+        if (badge && typeof membersModule !== 'undefined') {
+            try {
+                const unreadCount = membersModule.getUnreadNotificationsCount();
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('خطأ في تحديث شارة الإشعارات:', error);
+            }
+        }
+    }
+    
+    // تصدير إلى Excel
+    function exportToExcel() {
+        if (typeof membersModule === 'undefined') {
+            alert('النظام غير جاهز للتصدير');
+            return;
+        }
+        
+        try {
+            const newMembers = getNewMembersThisMonth();
+            
+            if (newMembers.length === 0) {
+                alert('لا توجد بيانات للتصدير');
+                return;
+            }
+            
+            // إنشاء محتوى CSV
+            let csv = 'الرقم,الاسم,تاريخ الانضمام,نوع الاشتراك,رقم الهاتف,الحالة,المبلغ,العمر,الجنس\n';
+            
+            newMembers.forEach((member, index) => {
+                const joinDate = new Date(member.addedDate || member.startDate);
+                const formattedDate = joinDate.toLocaleDateString('ar-EG');
+                
+                const statusText = member.status === 'active' ? 'نشط' : 
+                                 member.status === 'expiring' ? 'ينتهي قريباً' : 
+                                 'منتهي';
+                
+                const genderText = member.gender === 'male' ? 'ذكر' : 'أنثى';
+                
+                csv += `${index + 1},${member.fullName || member.name},${formattedDate},${member.packageName || ''},${member.phone || ''},${statusText},${member.packagePrice || 0},${member.age || ''},${genderText}\n`;
+            });
+            
+            // تحميل الملف
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            const currentMonth = new Date().getMonth() + 1;
+            const currentYear = new Date().getFullYear();
+            const arabicMonths = [
+                'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+            ];
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `أعضاء_جدد_${arabicMonths[currentMonth-1]}_${currentYear}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert(`تم تصدير ${newMembers.length} سجل بنجاح`);
+            
+        } catch (error) {
+            console.error('خطأ في التصدير:', error);
+            alert('حدث خطأ أثناء التصدير');
+        }
+    }
+    
+    // إضافة زر تصدير إلى نافذة الأعضاء الجدد
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            const modalFooter = document.querySelector('.modal-footer');
+            if (modalFooter) {
+                // تحقق إذا كان الزر موجود بالفعل
+                if (!modalFooter.querySelector('.export-btn')) {
+                    const exportButton = document.createElement('button');
+                    exportButton.innerHTML = '<i class="fas fa-download"></i> تصدير إلى Excel';
+                    exportButton.className = 'export-btn';
+                    exportButton.style.cssText = `
+                        background-color: #4a6baf;
+                        color: white;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        margin-right: 10px;
+                        transition: background-color 0.3s;
+                    `;
+                    
+                    exportButton.addEventListener('mouseover', function() {
+                        this.style.backgroundColor = '#3a5b9f';
+                    });
+                    
+                    exportButton.addEventListener('mouseout', function() {
+                        this.style.backgroundColor = '#4a6baf';
+                    });
+                    
+                    exportButton.addEventListener('click', function() {
+                        exportToExcel();
+                    });
+                    
+                    modalFooter.insertBefore(exportButton, modalFooter.firstChild);
+                }
+            }
+        }, 1000);
+    });
+    
+    // تحديث الإحصائيات كل 30 ثانية
+    setInterval(updateDashboardStats, 30000);
+    
+    // إغلاق النافذة باستخدام مفتاح ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const newMembersModal = document.getElementById('newMembersModal');
+            if (newMembersModal && newMembersModal.style.display === 'flex') {
+                closeNewMembersModal();
+            }
+        }
+    });
+
+    </script>
+</body>
+</html>
