@@ -87,7 +87,7 @@ const loginManager = {
         
         switch(role) {
             case 'admin':
-                window.location.href = '/dashboard.html';
+                window.location.href = '../dashboard.html';
                 break;
             case 'assistant':
                 window.location.href = '../assistant-dashboard.html';
