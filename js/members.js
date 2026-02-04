@@ -1,23 +1,4 @@
-
-import { db } from "./firebase.js";
-import { collection, addDoc }
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-async function testFirebase() {
-  try {
-    await addDoc(collection(db, "test"), {
-      message: "Firebase connected",
-      time: Date.now()
-    });
-    console.log("✅ Firebase شغال");
-  } catch (error) {
-    console.error("❌ Firebase مش شغال", error);
-  }
-}
-
-testFirebase();
-
-
+// ملف بيانات الأعضاء والاشتراكات
 const members = {
     // بيانات افتراضية للأعضاء
     defaultMembers: [
@@ -687,34 +668,29 @@ saveToLocalDeleted: function(member, deletedBy, reason) {
     },
 
     // جلب الأعضاء الجدد هذا الشهر
-  // في ملف members.js، أضف هذه الدالة إلى كائن membersModule
+    getNewMembersThisMonth: function() {
+        const allMembers = this.getAllMembers();
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+        
+        return allMembers.filter(member => {
+            if (member.addedDate || member.startDate) {
+                const joinDate = new Date(member.addedDate || member.startDate);
+                return joinDate.getMonth() === currentMonth && 
+                       joinDate.getFullYear() === currentYear;
+            }
+            return false;
+        });
+    },
 
-// الحصول على الأعضاء المضافين هذا الشهر
-getNewMembersThisMonth: function() {
-    const allMembers = this.getAllMembers();
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
-    
-    // تصفية الأعضاء المضافين هذا الشهر
-    const newMembers = allMembers.filter(member => {
-        if (member.addedDate || member.startDate) {
-            const joinDate = new Date(member.addedDate || member.startDate);
-            return joinDate.getMonth() === currentMonth && 
-                   joinDate.getFullYear() === currentYear;
-        }
-        return false;
-    });
-    
-    return newMembers;
-},
+    // حساب إجمالي إشتراكات الأعضاء الجدد
+    getNewMembersRevenue: function() {
+        const newMembers = this.getNewMembersThisMonth();
+        return newMembers.reduce((sum, member) => {
+            return sum + (parseFloat(member.packagePrice) || 0);
+        }, 0);
+    },
 
-// الحصول على إيرادات الأعضاء الجدد هذا الشهر
-getNewMembersRevenue: function() {
-    const newMembers = this.getNewMembersThisMonth();
-    return newMembers.reduce((sum, member) => {
-        return sum + (parseFloat(member.packagePrice) || 0);
-    }, 0);
-},
     // إنشاء تقرير الأعضاء الجدد
     generateNewMembersReport: function() {
         const newMembers = this.getNewMembersThisMonth();
@@ -894,5 +870,3 @@ window.testDeleteMember = function(memberId) {
         alert('فشل الحذف!');
     }
 };
-
-

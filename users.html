@@ -326,20 +326,19 @@
             <button class="btn btn-secondary" onclick="GymManagement.closeModal(document.getElementById('editUserModal'))">
                 إلغاء
             </button>
-            <button class="btn btn-primary" onclick="saveUserChanges()">
+            <button class="btn btn-primary" onclick="GymManagement.saveUserChanges()">
                 <i class="fas fa-save"></i> حفظ التغييرات
             </button>
         </div>
     </div>
 </div>
-<script   type="module"src="js/user.js"></script>
-<script  type="module"src="js/members.js"></script>
+<script src="js/user.js"></script>
+<script src="js/members.js"></script>
 <script src="js/login.js"></script>
 <!-- <script src="js/telegram.js"></script> -->
 
     <script src="js/script.js"></script>
     <script>
-
         // تهيئة الصفحة عند التحميل
         document.addEventListener('DOMContentLoaded', function() {
             // تحميل الأدوار في القوائم المنسدلة
@@ -517,8 +516,6 @@
                 GymManagement.showCustomAlert('خطأ', 'حدث خطأ أثناء إضافة المستخدم', 'error');
             }
         }
-        
-        
     </script>
 </body>
 </html>

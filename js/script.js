@@ -780,80 +780,70 @@ const GymManagement = {
     },
     
     // عرض قائمة الأعضاء
-    // عرض قائمة الأعضاء
-displayMembers: function(members) {
-    const tableBody = document.querySelector('.members-table tbody');
-    if (!tableBody) return;
-    
-    if (members.length === 0) {
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="9" style="text-align: center; padding: 30px;">
-                    لا توجد أعضاء
-                </td>
-            </tr>
-        `;
-        return;
-    }
-    
-    let tableHTML = '';
-    
-    members.forEach((member, index) => {
-        const statusText = {
-            'active': 'نشط',
-            'expiring': 'قريب الانتهاء',
-            'expired': 'منتهي'
-        };
+    displayMembers: function(members) {
+        const tableBody = document.querySelector('.members-table tbody');
+        if (!tableBody) return;
         
-        const paymentText = {
-            'cash': 'كاش',
-            'vodafone_cash': 'فودافون كاش',
-            'instapay': 'انستا باي'
-        };
+        if (members.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="9" style="text-align: center; padding: 30px;">
+                        لا توجد نتائج للبحث
+                    </td>
+                </tr>
+            `;
+            return;
+        }
         
-        // من أضاف العضو؟
-        const addedBy = member.addedBy || 'نظام';
+        let tableHTML = '';
         
-        tableHTML += `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${member.fullName}</td>
-                <td>${member.phone}</td>
-                <td>${member.packageName}</td>
-                <td>${member.startDate}</td>
-                <td>${member.endDate}</td>
-                <td>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <div style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #4a6baf, #6a8bcf); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">
-                            ${addedBy.charAt(0)}
+        members.forEach(member => {
+            const statusText = {
+                'active': 'نشط',
+                'expiring': 'قريب الانتهاء',
+                'expired': 'منتهي'
+            };
+            
+            const paymentText = {
+                'cash': 'كاش',
+                'vodafone_cash': 'فودافون كاش',
+                'instapay': 'انستا باي'
+            };
+            
+            tableHTML += `
+                <tr>
+                    <td>${member.id}</td>
+                    <td>${member.fullName}</td>
+                    <td>${member.age}</td>
+                    <td>${member.gender === 'male' ? 'رجل' : 'سيده'}</td>
+                    <td>${member.packageName}</td>
+                    <td>${member.endDate}</td>
+                    <td>
+                        <span class="status ${member.status}">
+                            ${statusText[member.status] || member.status}
+                        </span>
+                    </td>
+                    <td>${paymentText[member.paymentMethod] || member.paymentMethod}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn view" title="عرض" onclick="GymManagement.viewMember('${member.id}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn edit" title="تعديل" onclick="GymManagement.editMember('${member.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete" title="حذف" onclick="GymManagement.deleteMember('${member.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
-                        <span>${addedBy}</span>
-                    </div>
-                </td>
-                <td>
-                    <span class="status ${member.status}">
-                        ${statusText[member.status] || member.status}
-                    </span>
-                </td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="action-btn view" title="عرض" onclick="GymManagement.viewMember('${member.id}')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="action-btn edit" title="تعديل" onclick="GymManagement.editMember('${member.id}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete" title="حذف" onclick="GymManagement.deleteMember('${member.id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `;
-    });
+                    </td>
+                </tr>
+            `;
+        });
+        
+        tableBody.innerHTML = tableHTML;
+    },
     
-    tableBody.innerHTML = tableHTML;
-},
     // عرض قائمة المستخدمين
     displayUsers: function(users) {
         const tableBody = document.querySelector('.users-table tbody');
@@ -1062,27 +1052,10 @@ displayMembers: function(members) {
     },
     
     // فتح نموذج تعديل المستخدم
-
-    // في كودك، غير دالة editUser في GymManagement من:
-
-
-// إلى:
-openEditUserModal: function(user) {
-    console.log('فتح نموذج تعديل المستخدم:', user);
-    
-    // تعبئة البيانات في نموذج التعديل
-    document.getElementById('editUserId').value = user.id;
-    document.getElementById('editUsername').value = user.username;
-    document.getElementById('editName').value = user.name;
-    document.getElementById('editEmail').value = user.email || '';
-    document.getElementById('editPhone').value = user.phone || '';
-    document.getElementById('editRole').value = user.role;
-    document.getElementById('editStatus').value = user.status;
-    
-    // إظهار المودال
-    document.getElementById('editUserModal').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-},
+    openEditUserModal: function(user) {
+        console.log('فتح نموذج تعديل المستخدم:', user);
+        this.showCustomAlert('قريباً', 'ميزة تعديل المستخدم قيد التطوير', 'info');
+    },
     
     // عرض حوار تأكيد
     showConfirmDialog: function(title, message, onConfirm) {
@@ -1196,208 +1169,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 100);
 });
-
-
-// دالة لعرض مودال تأكيد الخروج
-// دالة لعرض مودال تأكيد الخروج
-function logoutUser() {
-    // عرض مودال التأكيد
-    document.getElementById('logoutConfirmModal').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
-
-// دالة لإغلاق مودال الخروج
-function closeLogoutModal() {
-    document.getElementById('logoutConfirmModal').style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-// دالة تأكيد الخروج
-function confirmLogout() {
-    // إغلاق مودال التأكيد
-    closeLogoutModal();
-    
-    // عرض مودال التحميل
-    document.getElementById('logoutModal').style.display = 'flex';
-    
-    // تسجيل في الكونسول
-    console.log('تسجيل الخروج...');
-    
-    // مسح بيانات المستخدم بعد تأخير بسيط
-    setTimeout(() => {
-        // مسح بيانات الجلسة
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('authToken');
-        sessionStorage.clear();
-        
-        // إغلاق مودال التحميل
-        document.getElementById('logoutModal').style.display = 'none';
-        
-        // عرض رسالة نجاح
-        showToast('success', 'تم تسجيل الخروج بنجاح', 'سيتم توجيهك إلى صفحة الدخول...');
-        
-        // التوجيه إلى صفحة الدخول
-        setTimeout(() => {
-            window.location.href = '../index.html';
-        }, 1500);
-        
-    }, 1000);
-}
-
-// دالة لعرض Toast notifications
-function showToast(type, title, message) {
-    const toast = document.createElement('div');
-    toast.className = `toast-notification toast-${type}`;
-    toast.innerHTML = `
-        <div class="toast-icon">
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : 
-                          type === 'error' ? 'fa-exclamation-circle' : 
-                          type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
-        </div>
-        <div class="toast-content">
-            <div class="toast-title">${title}</div>
-            <div class="toast-message">${message}</div>
-        </div>
-        <button class="toast-close" onclick="this.parentElement.remove()">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
-    
-    document.body.appendChild(toast);
-    
-    // إضافة أنيميشن
-    setTimeout(() => {
-        toast.classList.add('show');
-    }, 10);
-    
-    // إزالة التوست بعد 5 ثواني
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => {
-            if (toast.parentNode) {
-                document.body.removeChild(toast);
-            }
-        }, 300);
-    }, 5000);
-}
-// دالة لعرض Toast notifications
-function showToast(type, title, message) {
-    const toast = document.createElement('div');
-    toast.className = `toast-notification toast-${type}`;
-    toast.innerHTML = `
-        <div class="toast-icon">
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : 
-                          type === 'error' ? 'fa-exclamation-circle' : 
-                          type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
-        </div>
-        <div class="toast-content">
-            <div class="toast-title">${title}</div>
-            <div class="toast-message">${message}</div>
-        </div>
-        <button class="toast-close" onclick="this.parentElement.remove()">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
-    
-    document.body.appendChild(toast);
-    
-    // إضافة أنيميشن
-    setTimeout(() => {
-        toast.classList.add('show');
-    }, 10);
-    
-    // إزالة التوست بعد 5 ثواني
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => {
-            if (toast.parentNode) {
-                document.body.removeChild(toast);
-            }
-        }, 300);
-    }, 5000);
-}
-
-// دالة حفظ التعديلات
-window.saveUserChanges = function() {
-    const userId = parseInt(document.getElementById('editUserId').value);
-    const newPassword = document.getElementById('editPassword').value;
-    const confirmPassword = document.getElementById('editConfirmPassword').value;
-    
-    // تحقق من كلمة المرور
-    if (newPassword && newPassword !== confirmPassword) {
-        GymManagement.showCustomAlert('خطأ', 'كلمتا المرور غير متطابقتين', 'error');
-        return;
-    }
-    
-    // تجمع البيانات الجديدة
-    const updatedUser = {
-        username: document.getElementById('editUsername').value,
-        name: document.getElementById('editName').value,
-        email: document.getElementById('editEmail').value,
-        phone: document.getElementById('editPhone').value,
-        role: document.getElementById('editRole').value,
-        status: document.getElementById('editStatus').value
-    };
-    
-    // تضيف كلمة المرور الجديدة لو موجودة
-    if (newPassword) {
-        updatedUser.password = newPassword;
-    }
-    
-    // تحقق من البيانات
-    if (!updatedUser.username || !updatedUser.name || !updatedUser.email || !updatedUser.role) {
-        GymManagement.showCustomAlert('خطأ', 'يرجى ملء جميع الحقول المطلوبة', 'error');
-        return;
-    }
-    
-    // تحقق من اسم المستخدم المكرر
-    const users = usersModule.getAllUsers();
-    const usernameExists = users.some(u => 
-        u.username === updatedUser.username && u.id !== userId
-    );
-    
-    if (usernameExists) {
-        GymManagement.showCustomAlert('خطأ', 'اسم المستخدم موجود بالفعل', 'error');
-        return;
-    }
-    
-    // تحفظ التعديلات
-    const success = usersModule.updateUser(userId, updatedUser);
-    
-    if (success) {
-        // تغلق النافذة
-        document.getElementById('editUserModal').style.display = 'none';
-        document.body.style.overflow = 'auto';
-        
-        // تظهر رسالة نجاح
-        GymManagement.showCustomAlert('نجاح', 'تم تحديث بيانات المستخدم بنجاح', 'success');
-        
-        // تعيد تحميل الجدول
-        const users = usersModule.getAllUsers();
-        GymManagement.displayUsers(users);
-    } else {
-        GymManagement.showCustomAlert('خطأ', 'حدث خطأ أثناء تحديث المستخدم', 'error');
-    }
-};
-
-// دالة إغلاق نافذة التعديل
-function closeEditModal() {
-    document.getElementById('editUserModal').style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-// إغلاق عند النقر خارج النافذة
-// document.getElementById('editUserModal').addEventListener('click', function(e) {
-//     if (e.target === this) {
-//         closeEditModal();
-//     }
-// });
-
-// إغلاق بالزر ESC
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && document.getElementById('editUserModal').style.display === 'flex') {
-        closeEditModal();
-    }
-});
-
-
